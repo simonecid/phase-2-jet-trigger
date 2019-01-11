@@ -1,0 +1,1 @@
+char hls_main(short int caloGrid[ETA_SIZE][PHI_SIZE], short int centralIEta);
