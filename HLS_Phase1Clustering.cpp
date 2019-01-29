@@ -116,7 +116,7 @@ void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet)
 
   // Scanning through the grid centered on the seed
 
-  unsigned short int ptSum;
+  unsigned short int ptSum = 0;
 
   for (char iEtaIndex = -ETA_JET_SIZE/2; iEtaIndex <= ETA_JET_SIZE/2; iEtaIndex++)
   {
