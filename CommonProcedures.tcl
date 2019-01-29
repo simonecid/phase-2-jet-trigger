@@ -39,7 +39,7 @@ proc synthetise {projectName solutionName} {
   csynth_design
 }
 
-proc run_RTL_simulation {projectName solutionName} { 
+proc run_rtl_simulation {projectName solutionName} { 
   open_project $projectName
   open_solution $solutionName
   csynth_design
