@@ -139,7 +139,7 @@ void applyEtaShift(Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound,
   }
 }
 
-unsigned char hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBER_OF_SEEDS], unsigned char *numberOfJetsFound) 
+void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBER_OF_SEEDS], unsigned char *numberOfJetsFound) 
 {
   CaloGrid lCaloGrid;
   for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
@@ -151,7 +151,6 @@ unsigned char hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJ
   }
   char lEtaShift = inEtaShift;
   unsigned char numberOfSeedsFound = 0;
-  *numberOfJetsFound = numberOfSeedsFound;
   Jet seeds[NUMBER_OF_SEEDS];
   findSeeds(lCaloGrid, seeds, &numberOfSeedsFound);
   buildJetsFromSeeds(lCaloGrid, seeds, numberOfSeedsFound);
@@ -163,4 +162,5 @@ unsigned char hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJ
     inJets[jetIndex].iEta = seeds[jetIndex].iEta;
     inJets[jetIndex].iPhi = seeds[jetIndex].iPhi;
   }
+  *numberOfJetsFound = numberOfSeedsFound;
 }
