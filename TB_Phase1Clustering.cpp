@@ -30,10 +30,6 @@ int main(int argc, char const *argv[])
 
   grid[4][10] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
-  std::cout << "numberOfJetsFound: " << +numberOfJetsFound << std::endl;
-  std::cout << "pt: " << +jets[0].pt << std::endl;
-  std::cout << "eta: " << +jets[0].iEta << std::endl;
-  std::cout << "phi: " << +jets[0].iPhi << std::endl;
   assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 10);
   assert(jets[0].iEta == 14);
@@ -83,6 +79,7 @@ int main(int argc, char const *argv[])
   assert(jets[0].pt == 85);
   assert(jets[0].iEta == 14);
   assert(jets[0].iPhi == 20);
-
+  
+  std::cout << "All test have been successfully passed." << std::endl;
   return 0;
 }
