@@ -1,39 +1,22 @@
-#include "HLS_Test.h"
+#include "HLS_Phase1Clustering.h"
 
-#define PHI_GRID_SIZE 82
-#define ETA_GRID_SIZE 9
-#define PHI_JET_SIZE 9
-#define ETA_JET_SIZE 9
-#define NUMBER_OF_SEEDS 64
-#define NUMBER_OF_JETS 16
-#define SEED_THRESHOLD 5
-
-typedef unsigned short int CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
-
-class Jet {
-  public:
-  unsigned short int pt;
-  char iPhi;
-  char iEta;
-}
-
-unsigned short int getTowerEnergy(const CaloGrid caloGrid, int iEta, int iPhi)
+unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
   // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
   //int nBinsEta = caloGrid.GetNbinsX();
   //int nBinsPhi = caloGrid.GetNbinsY();
   while (iPhi < 0) {
-    iPhi += nBinsPhi;
+    iPhi += PHI_GRID_SIZE;
   }
-  while (iPhi > nBinsPhi - 1) {
-    iPhi -= nBinsPhi;
+  while (iPhi > PHI_GRID_SIZE - 1) {
+    iPhi -= PHI_GRID_SIZE;
   }
   if (iEta < 0) {
     //std::cout << "Returning (pt, ieta, iphi): " << "(" << 0 << ", " << iEta << ", " << iPhi << ")" << std::endl;
     return 0;
   }
-  if (iEta > nBinsEta - 1) {
+  if (iEta > ETA_GRID_SIZE - 1) {
     //std::cout << "Returning (pt, ieta, iphi): " << "(" << 0 << ", " << iEta << ", " << iPhi << ")" << std::endl;
     return 0;
   }
@@ -41,7 +24,7 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, int iEta, int iPhi)
   return caloGrid[iEta][iPhi];
 }
 
-void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS]) 
+void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound) 
 {
   //int nBinsX = caloGrid.GetNbinsX();
   //int nBinsY = caloGrid.GetNbinsY();
@@ -72,7 +55,7 @@ void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS])
     for (char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
     {
       unsigned short int centralPt = caloGrid[iEta][iPhi]; //caloGrid.GetBinContent(iEta, iPhi);
-      if (centralPt <= SEED_THRESHOLD) continue;
+      if (centralPt < SEED_THRESHOLD) continue;
       bool isLocalMaximum = true;
 
       // Scanning through the grid centered on the seed
@@ -100,40 +83,84 @@ void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS])
       if (isLocalMaximum)
       {
         //emplace_back(std::make_tuple(iEta, iPhi));
-        jets[jetIdx].pt = centralPt;
-        jets[jetIdx].iEta = iEta;
-        jets[jetIdx].iPhi = iPhi;
+        seeds[jetIdx].pt = centralPt;
+        seeds[jetIdx].iEta = iEta;
+        seeds[jetIdx].iPhi = iPhi;
         jetIdx++;
         if (jetIdx >= NUMBER_OF_SEEDS) return;
       }
     }
   }
+  *numberOfSeedsFound = jetIdx;
   return;
 }
 
-void buildJetsFromSeeds(const CaloGrid & caloGrid, const std::vector<std::tuple<int, int>> & seeds, bool killZeroPt)
+void buildJetsFromSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound)
 {
 
   // For each seed take a grid centered on the seed of the size specified by the user
   // Sum the pf in the grid, that will be the pt of the l1t jet. Eta and phi of the jet is taken from the seed.
-  std::vector<reco::CaloJet> jets;
-  for (const auto& seed: seeds)
+  for (char x = 0; x < numberOfSeedsFound; x++)
   {
-    reco::CaloJet jet = this -> _buildJetFromSeed(caloGrid, seed);
-    this -> _subtract9x9Pileup(caloGrid, jet);
-    //killing jets with 0 pt
-    if ((this -> _vetoZeroPt) && (jet.pt() <= 0)) continue;
-    jets.push_back(jet);
+    buildJetFromSeed(caloGrid, &seeds[x]);
   }
-
-  return jets;
 }
 
-char hls_main(const CaloGrid caloGrid, short int centralIEta, Jet jets[NUMBER_OF_JETS]) {
-  
-  //TODO: COPY calogrid TO LOCAL MEMORY ~~~ calogridlocal = memcpy(caloGrid)
-  Jets seeds[NUMBER_OF_SEEDS];
-  findSeeds(caloGrid, seeds);
-  
+void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet) 
+{
+  //int iEta = std::get<0>(seed);
+  //int iPhi = std::get<1>(seed);
 
+  //int etaHalfSize = (int) this -> _jetIEtaSize/2;
+  //int phiHalfSize = (int) this -> _jetIPhiSize/2;
+
+  // Scanning through the grid centered on the seed
+
+  unsigned short int ptSum;
+
+  for (char iEtaIndex = -ETA_JET_SIZE/2; iEtaIndex <= ETA_JET_SIZE/2; iEtaIndex++)
+  {
+    for (char iPhiIndex = -PHI_JET_SIZE/2; iPhiIndex <= PHI_JET_SIZE/2; iPhiIndex++)
+    {
+      ptSum += getTowerEnergy(caloGrid, jet -> iEta + iEtaIndex, jet -> iPhi + iPhiIndex);
+    }
+  }
+
+  // Creating a jet with eta phi centered on the seed and momentum equal to the sum of the pt of the components    
+  //reco::Candidate::LorentzVector ptVector;
+  jet -> pt = ptSum;
+}
+
+void applyEtaShift(Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound, char etaShift)
+{
+  for (char x = 0; x < numberOfSeedsFound; x++) 
+  {
+    seeds[x].iEta = seeds[x].iEta + etaShift;
+  }
+}
+
+unsigned char hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBER_OF_SEEDS], unsigned char *numberOfJetsFound) 
+{
+  CaloGrid lCaloGrid;
+  for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  {
+   for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+   {
+     lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
+   }
+  }
+  char lEtaShift = inEtaShift;
+  unsigned char numberOfSeedsFound = 0;
+  *numberOfJetsFound = numberOfSeedsFound;
+  Jet seeds[NUMBER_OF_SEEDS];
+  findSeeds(lCaloGrid, seeds, &numberOfSeedsFound);
+  buildJetsFromSeeds(lCaloGrid, seeds, numberOfSeedsFound);
+  applyEtaShift(seeds, numberOfSeedsFound, lEtaShift);
+
+  for (char jetIndex = 0; jetIndex < numberOfSeedsFound; jetIndex++) 
+  {
+    inJets[jetIndex].pt = seeds[jetIndex].pt;
+    inJets[jetIndex].iEta = seeds[jetIndex].iEta;
+    inJets[jetIndex].iPhi = seeds[jetIndex].iPhi;
+  }
 }
