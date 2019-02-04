@@ -154,7 +154,7 @@ void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBE
   }
 
   // initialising internal jets
-  jetInitialisationLoop: for (char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
+  jetInitialisationLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
   {
     jets[jetIndex].pt = 0;
     jets[jetIndex].iEta = 0;
@@ -165,7 +165,7 @@ void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBE
   buildJets(lCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
 
   // copying back the results
-  jetOutputCopyLoop: for (char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
+  jetOutputCopyLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
   {
     inJets[jetIndex].pt = jets[jetIndex].pt;
     inJets[jetIndex].iEta = jets[jetIndex].iEta;

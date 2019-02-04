@@ -71,7 +71,7 @@ if __name__ == "__main__":
     parameters["PHI_JET_SIZE"] = combination[2]
     parameters["ETA_JET_SIZE"] = combination[3]
     parameters["NUMBER_OF_SEEDS"] = combination[4]
-    buildHeader("header_test.h", parameters)
+    buildHeader("HLS_Phase1Clustering.h", parameters)
     runVivadoTCL("FPGAClustering_Synthetise.tcl")
     addParametersAndStore(
       "FPGAClustering/FPGAClustering/syn/report/hls_main_csynth.xml",
