@@ -10,7 +10,7 @@
 #
 
 # Defines the mode that will be run in the script
-set mode setup
+set mode synth
 # Sets the project name we will work on
 set project_name FPGAClustering
 # Sets the solution name we will work on
@@ -20,7 +20,7 @@ set hls_files [list HLS_Phase1Clustering.cpp]
 # Sets the test bench files
 set tb_files [list TB_Phase1Clustering.cpp]
 # Sets the device we want to synthetise for
-set part {xc7k160tfbg484-1}
+set part {xcku115-flva1517-1-c}
 # Sets the clock frequency (if MHz is appended to the number), or period (if only the number is used)
 # 10 = 10 ns
 # 40MHz = 25 ns -> set clock 40MHz
