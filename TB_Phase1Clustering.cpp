@@ -28,57 +28,51 @@ int main(int argc, char const *argv[])
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 0);
 
-  grid[4][10] = 10;
+  grid[4][5] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 10);
   assert(jets[0].iEta == 14);
-  assert(jets[0].iPhi == 10);
+  assert(jets[0].iPhi == 5);
 
   cleanGrid(grid);
-  grid[4][10] = 10;
-  grid[5][10] = 10;
-  hls_main(grid, 10, jets, &numberOfJetsFound);
-  assert(numberOfJetsFound == 0);
-
-  cleanGrid(grid);
-  grid[4][10] = 10;
-  grid[3][10] = 10;
+  grid[4][5] = 10;
+  grid[3][5] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert (numberOfJetsFound == 1);
   assert(jets[0].pt == 20);
   assert(jets[0].iEta == 14);
-  assert(jets[0].iPhi == 10);
+  assert(jets[0].iPhi == 5);
 
   cleanGrid(grid);
-  grid[4][10] = 10;
-  grid[4][11] = 10;
+  grid[4][5] = 10;
+  grid[4][6] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 20);
   assert(jets[0].iEta == 14);
-  assert(jets[0].iPhi == 11);
+  assert(jets[0].iPhi == 6);
   
   cleanGrid(grid);
-  grid[4][10] = 10;
-  grid[4][9] = 10;
+  grid[4][5] = 10;
+  grid[4][4] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 20);
   assert(jets[0].iEta == 14);
-  assert(jets[0].iPhi == 10);
+  assert(jets[0].iPhi == 5);
 
   cleanGrid(grid, SEED_THRESHOLD - 1);
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 0);
 
   cleanGrid(grid, 1);
-  grid[4][20] = 5;
+  grid[4][8] = 5;
   hls_main(grid, 10, jets, &numberOfJetsFound);
   assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 85);
   assert(jets[0].iEta == 14);
-  assert(jets[0].iPhi == 20);
+  assert(jets[0].iPhi == 8);
   
   std::cout << "All test have been successfully passed." << std::endl;
   return 0;
