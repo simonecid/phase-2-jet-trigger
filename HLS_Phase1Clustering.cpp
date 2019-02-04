@@ -1,22 +1,30 @@
 #include "HLS_Phase1Clustering.h"
 
+#ifndef __SYNTHESIS__
+#include <iostream>
+#endif
+
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
   // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
   //int nBinsEta = caloGrid.GetNbinsX();
   //int nBinsPhi = caloGrid.GetNbinsY();
-  while (iPhi < 0) {
+  if (iPhi < 0) 
+  {
     iPhi += PHI_GRID_SIZE;
   }
-  while (iPhi > PHI_GRID_SIZE - 1) {
+  if (iPhi > PHI_GRID_SIZE - 1) 
+  {
     iPhi -= PHI_GRID_SIZE;
   }
-  if (iEta < 0) {
+  if (iEta < 0) 
+  {
     //std::cout << "Returning (pt, ieta, iphi): " << "(" << 0 << ", " << iEta << ", " << iPhi << ")" << std::endl;
     return 0;
   }
-  if (iEta > ETA_GRID_SIZE - 1) {
+  if (iEta > ETA_GRID_SIZE - 1) 
+  {
     //std::cout << "Returning (pt, ieta, iphi): " << "(" << 0 << ", " << iEta << ", " << iPhi << ")" << std::endl;
     return 0;
   }
@@ -24,15 +32,15 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
   return caloGrid[iEta][iPhi];
 }
 
-void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound) 
+void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound, char etaShift)
 {
   //int nBinsX = caloGrid.GetNbinsX();
   //int nBinsY = caloGrid.GetNbinsY();
   #if NUMBER_OF_SEEDS > 256
-  #pragma message "Working with more than 256 seeds, moving to 2-byte index counter, please do not go over 65536 seeds or this may break"
+  #pragma message "Working with more than 256 jets, moving to 2-byte index counter, please do not go over 65536 jets or this may break"
   unsigned int jetIdx = 0;
   #else
-  char jetIdx = 0;
+  unsigned char jetIdx = 0;
   #endif
 
   //int etaHalfSize = (int) this -> _jetIEtaSize/2;
@@ -46,34 +54,42 @@ void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned cha
   #if PHI_GRID_SIZE > 256
   #error "Phi grid size is above 256, looping variable not big enough"
   #endif 
-  for (char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
+  seedFinderPhiScanLoop: for (char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
+  //seedFinderPhiScanLoop: for (char iPhi = 0; iPhi < 1; iPhi++)
   {
+    //#pragma HLS unroll
     #if ETA_GRID_SIZE > 256
     #error "Eta grid size is above 256, looping variable not big enough"
     #endif
     //Excluding eta range in which the grid falls out of bounds
-    for (char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
+    seedFinderEtaScanLoop: for (char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
     {
       unsigned short int centralPt = caloGrid[iEta][iPhi]; //caloGrid.GetBinContent(iEta, iPhi);
       if (centralPt < SEED_THRESHOLD) continue;
       bool isLocalMaximum = true;
 
       // Scanning through the grid centered on the seed
-      for (char etaIndex = -ETA_JET_SIZE/2; etaIndex <= ETA_JET_SIZE/2; etaIndex++)
+      checkMaximumEtaLoop: for (char etaIndex = -ETA_JET_SIZE/2; etaIndex <= ETA_JET_SIZE/2; etaIndex++)
       {
-        for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
+        checkMaximumPhiLoop: for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
         {
           if ((etaIndex == 0) && (phiIndex == 0)) continue;
-          if (phiIndex > 0) {
-            if (phiIndex > -etaIndex){
+          if (phiIndex > 0) 
+          {
+            if (phiIndex > -etaIndex)
+            {
               isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else {
+            } else 
+            {
               isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
             }
-          } else {
-            if (phiIndex >= -etaIndex){
+          } else 
+          {
+            if (phiIndex >= -etaIndex)
+            {
               isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else {
+            } else 
+            {
               isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
             }
           }
@@ -83,9 +99,10 @@ void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned cha
       if (isLocalMaximum)
       {
         //emplace_back(std::make_tuple(iEta, iPhi));
-        seeds[jetIdx].pt = centralPt;
-        seeds[jetIdx].iEta = iEta;
-        seeds[jetIdx].iPhi = iPhi;
+        jets[jetIdx].iEta = iEta;
+        jets[jetIdx].iPhi = iPhi;
+        buildJetFromSeed(caloGrid, &jets[jetIdx]);
+        jets[jetIdx].iEta += etaShift;
         jetIdx++;
         if (jetIdx >= NUMBER_OF_SEEDS) return;
       }
@@ -93,17 +110,6 @@ void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned cha
   }
   *numberOfSeedsFound = jetIdx;
   return;
-}
-
-void buildJetsFromSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound)
-{
-
-  // For each seed take a grid centered on the seed of the size specified by the user
-  // Sum the pf in the grid, that will be the pt of the l1t jet. Eta and phi of the jet is taken from the seed.
-  for (char x = 0; x < numberOfSeedsFound; x++)
-  {
-    buildJetFromSeed(caloGrid, &seeds[x]);
-  }
 }
 
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet) 
@@ -118,9 +124,9 @@ void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet)
 
   unsigned short int ptSum = 0;
 
-  for (char iEtaIndex = -ETA_JET_SIZE/2; iEtaIndex <= ETA_JET_SIZE/2; iEtaIndex++)
+  ptSumEtaLoop: for (char iEtaIndex = -ETA_JET_SIZE/2; iEtaIndex <= ETA_JET_SIZE/2; iEtaIndex++)
   {
-    for (char iPhiIndex = -PHI_JET_SIZE/2; iPhiIndex <= PHI_JET_SIZE/2; iPhiIndex++)
+    ptSumPhiLoop: for (char iPhiIndex = -PHI_JET_SIZE/2; iPhiIndex <= PHI_JET_SIZE/2; iPhiIndex++)
     {
       ptSum += getTowerEnergy(caloGrid, jet -> iEta + iEtaIndex, jet -> iPhi + iPhiIndex);
     }
@@ -131,36 +137,41 @@ void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet)
   jet -> pt = ptSum;
 }
 
-void applyEtaShift(Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound, char etaShift)
-{
-  for (char x = 0; x < numberOfSeedsFound; x++) 
-  {
-    seeds[x].iEta = seeds[x].iEta + etaShift;
-  }
-}
-
 void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBER_OF_SEEDS], unsigned char *numberOfJetsFound) 
 {
   CaloGrid lCaloGrid;
-  for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  char lEtaShift = inEtaShift;
+  unsigned char numberOfSeedsFound = 0;
+  Jet jets[NUMBER_OF_SEEDS];
+  
+  // copying grid
+  gridCopyEtaLoop: for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
   {
-   for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+   gridCopyPhiLoop: for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
    {
      lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
    }
   }
-  char lEtaShift = inEtaShift;
-  unsigned char numberOfSeedsFound = 0;
-  Jet seeds[NUMBER_OF_SEEDS];
-  findSeeds(lCaloGrid, seeds, &numberOfSeedsFound);
-  buildJetsFromSeeds(lCaloGrid, seeds, numberOfSeedsFound);
-  applyEtaShift(seeds, numberOfSeedsFound, lEtaShift);
 
-  for (char jetIndex = 0; jetIndex < numberOfSeedsFound; jetIndex++) 
+  // initialising internal jets
+  jetInitialisationLoop: for (char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
   {
-    inJets[jetIndex].pt = seeds[jetIndex].pt;
-    inJets[jetIndex].iEta = seeds[jetIndex].iEta;
-    inJets[jetIndex].iPhi = seeds[jetIndex].iPhi;
+    jets[jetIndex].pt = 0;
+    jets[jetIndex].iEta = 0;
+    jets[jetIndex].iPhi = 0;
+  }
+
+  // computing jets
+  buildJets(lCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
+
+  // copying back the results
+  jetOutputCopyLoop: for (char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
+  {
+    inJets[jetIndex].pt = jets[jetIndex].pt;
+    inJets[jetIndex].iEta = jets[jetIndex].iEta;
+    inJets[jetIndex].iPhi = jets[jetIndex].iPhi;
   }
   *numberOfJetsFound = numberOfSeedsFound;
+
+  return;  
 }
