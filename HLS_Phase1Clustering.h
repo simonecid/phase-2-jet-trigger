@@ -21,9 +21,7 @@ typedef struct {
 void hls_main(const CaloGrid caloGrid, const char centralIEta, 
               Jet jets[NUMBER_OF_SEEDS], unsigned char *numberOfJetsFound);
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
-void findSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound);
-void buildJetsFromSeeds(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound);
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);
-void applyEtaShift(Jet seeds[NUMBER_OF_SEEDS], unsigned char numberOfSeedsFound, char inEtaShift);
+void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound, char inEtaShift);
 
 #endif //__HLS_PHASE1CLUSTERING_H__
