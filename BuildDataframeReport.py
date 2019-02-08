@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+'''
+Build a dataframe with a few the performance report data and saves it to CSV for later analysis.
+'''
+
 import glob
 from lxml import etree as ET
 

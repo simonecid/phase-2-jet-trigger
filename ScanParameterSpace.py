@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 
-#define PHI_GRID_SIZE 72
-#define ETA_GRID_SIZE 9
-#define PHI_JET_SIZE 9
-#define ETA_JET_SIZE 9
-#define NUMBER_OF_SEEDS 64
-
+'''
+Utility script that scans the parameter space to analyse the FW performance.
+1) replaces the #define in the header to set the value of interest
+2) run synthesis
+3) retrieves the XML containing the report and saves it in a folder
+4) extracts a few parameters of interest from the report and puts them in a pandas dataframe
+'''
 
 from tempfile import mkstemp
 from shutil import move

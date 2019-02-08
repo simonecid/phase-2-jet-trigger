@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+'''
+Builds a set of facet plots to have an overview of the FPGA FW performance.
+Takes a folder where to save the plots and where the csv dataframe is stored.
+'''
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
