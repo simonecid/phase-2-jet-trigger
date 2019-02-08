@@ -11,7 +11,9 @@ from tempfile import mkstemp
 from shutil import move
 from os import fdopen, remove, system, WEXITSTATUS
 from itertools import product
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
+from BuildDataframeReport import BuildDataframeFromReports
+
 
 parameters = {}
 
@@ -27,6 +29,8 @@ values["ETA_GRID_SIZE"] = [9, 45, 82]
 values["PHI_JET_SIZE"] = [3, 5, 7, 9]
 values["ETA_JET_SIZE"] = [3, 5, 7, 9]
 values["NUMBER_OF_SEEDS"] = [64, 128]
+
+saveFolder = "reports"
 
 def buildHeader(file_path, parameters):
   #Create temp file
@@ -55,16 +59,18 @@ def runVivadoTCL(tclPath):
 
 def addParametersAndStore(inputFile, parameters, outputFile):
   # opening the file
-  xmlTree = ET.parse(inputFile)
+  parser = ET.XMLParser(remove_blank_text=True)
+  xmlTree = ET.parse(inputFile, parser)
   # adding the parameters for logging
   rootElement = xmlTree.getroot()
   for parName in parameters:
     subElement = ET.SubElement(rootElement, parName)
     subElement.text = str(parameters[parName])
   # saving the XML file
-  xmlTree.write(outputFile)
+  xmlTree.write(outputFile, pretty_print=True)
 
 if __name__ == "__main__":
+  
   for combination in product(values["PHI_GRID_SIZE"], values["ETA_GRID_SIZE"], values["PHI_JET_SIZE"], values["ETA_JET_SIZE"], values["NUMBER_OF_SEEDS"]):
     parameters["PHI_GRID_SIZE"] = combination[0]
     parameters["ETA_GRID_SIZE"] = combination[1]
@@ -76,7 +82,7 @@ if __name__ == "__main__":
     addParametersAndStore(
       "FPGAClustering/FPGAClustering/syn/report/hls_main_csynth.xml",
       parameters,
-      "reports/hls_main_csynth"
+      saveFolder + "/hls_main_csynth"
       + "_" + str(combination[0])
       + "_" + str(combination[1])
       + "_" + str(combination[2])
@@ -87,7 +93,7 @@ if __name__ == "__main__":
     addParametersAndStore(
       "FPGAClustering/FPGAClustering/syn/report/buildJets_csynth.xml",
       parameters,
-      "reports/buildJets_csynth"
+      saveFolder + "/buildJets_csynth"
       + "_" + str(combination[0])
       + "_" + str(combination[1])
       + "_" + str(combination[2])
@@ -95,3 +101,6 @@ if __name__ == "__main__":
       + "_" + str(combination[4])
       + ".xml"
     )
+  
+  BuildDataframeFromReports(saveFolder + "/hls_main_csynth*.xml", saveFolder + "/hls_main_csynth_dataframe.csv")
+  BuildDataframeFromReports(saveFolder + "/buildJets_csynth*.xml", saveFolder + "/buildJets_csynth_dataframe.csv")
