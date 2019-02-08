@@ -3,4 +3,11 @@
 .autopilot
 FPGAClustering/
 reports/
-
+*.pdf
+*.csv
+*.pkl
+*.png
+*.pyc
+*.rpt
+*.out
+*.xml
