@@ -8,8 +8,6 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
   // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
-  //int nBinsEta = caloGrid.GetNbinsX();
-  //int nBinsPhi = caloGrid.GetNbinsY();
   if (iPhi < 0) 
   {
     iPhi += PHI_GRID_SIZE;
@@ -36,15 +34,13 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
 {
   //int nBinsX = caloGrid.GetNbinsX();
   //int nBinsY = caloGrid.GetNbinsY();
+
   #if NUMBER_OF_SEEDS > 256
   #pragma message "Working with more than 256 jets, moving to 2-byte index counter, please do not go over 65536 jets or this may break"
   unsigned int jetIdx = 0;
   #else
   unsigned char jetIdx = 0;
   #endif
-
-  //int etaHalfSize = (int) this -> _jetIEtaSize/2;
-  //int phiHalfSize = (int) this -> _jetIPhiSize/2;
 
   // for each point of the grid check if it is a local maximum
   // to do so I take a point, and look if is greater than the points around it (in the 9x9 neighborhood)
@@ -74,23 +70,21 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
         checkMaximumPhiLoop: for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
         {
           if ((etaIndex == 0) && (phiIndex == 0)) continue;
+          char iEtaTmp = iEta + etaIndex;
+          char iPhiTmp = iPhi + phiIndex;
+          unsigned int towerEnergy = getTowerEnergy(caloGrid, iEtaTmp, iPhiTmp);
+          if (centralPt < towerEnergy) continue; 
           if (phiIndex > 0) 
-          {
-            if (phiIndex > -etaIndex)
-            {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else 
-            {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            }
-          } else 
           {
             if (phiIndex >= -etaIndex)
             {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else 
+              isLocalMaximum = ((isLocalMaximum) && (centralPt > towerEnergy));
+            }
+          } else 
+          {
+            if (phiIndex > -etaIndex)
             {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
+              isLocalMaximum = ((isLocalMaximum) && (centralPt > towerEnergy));
             }
           }
         }
@@ -98,13 +92,19 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
 
       if (isLocalMaximum)
       {
-        //emplace_back(std::make_tuple(iEta, iPhi));
-        jets[jetIdx].iEta = iEta;
-        jets[jetIdx].iPhi = iPhi;
-        buildJetFromSeed(caloGrid, &jets[jetIdx]);
+        Jet aJet;
+        aJet.iEta = iEta;
+        aJet.iPhi = iPhi;
+        buildJetFromSeed(caloGrid, &aJet);
+        jets[jetIdx].pt = aJet.pt;
+        jets[jetIdx].iEta = aJet.iEta;
+        jets[jetIdx].iPhi = aJet.iPhi;
         jets[jetIdx].iEta += etaShift;
         jetIdx++;
-        if (jetIdx >= NUMBER_OF_SEEDS) return;
+        if (jetIdx >= NUMBER_OF_SEEDS) {
+          *numberOfSeedsFound = jetIdx;
+          return;
+        } 
       }
     }
   }
@@ -145,24 +145,24 @@ void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBE
   Jet jets[NUMBER_OF_SEEDS];
   
   // copying grid
-  gridCopyEtaLoop: for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
-  {
-   gridCopyPhiLoop: for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
-   {
-     lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
-   }
-  }
+  //gridCopyEtaLoop: for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  //{
+  // gridCopyPhiLoop: for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+  // {
+  //   lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
+  // }
+  //}
 
   // initialising internal jets
-  jetInitialisationLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
-  {
-    jets[jetIndex].pt = 0;
-    jets[jetIndex].iEta = 0;
-    jets[jetIndex].iPhi = 0;
-  }
+  //jetInitialisationLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
+  //{
+  //  jets[jetIndex].pt = 0;
+  //  jets[jetIndex].iEta = 0;
+  //  jets[jetIndex].iPhi = 0;
+  //}
 
   // computing jets
-  buildJets(lCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
+  buildJets(inCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
 
   // copying back the results
   jetOutputCopyLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
