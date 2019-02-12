@@ -3,7 +3,6 @@
 #define PHI_JET_SIZE 9
 #define ETA_JET_SIZE 9
 #define NUMBER_OF_SEEDS 128
-#define NUMBER_OF_JETS 16
 #define SEED_THRESHOLD 5
 
 #ifndef __HLS_PHASE1CLUSTERING_H__

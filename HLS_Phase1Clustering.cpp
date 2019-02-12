@@ -58,7 +58,12 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
     seedFinderEtaScanLoop: for (char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
     {
       unsigned short int centralPt = caloGrid[iEta][iPhi]; //caloGrid.GetBinContent(iEta, iPhi);
-      if (centralPt < SEED_THRESHOLD) continue;
+
+      if ((jetIdx >= NUMBER_OF_SEEDS) || (centralPt < SEED_THRESHOLD)) continue;
+
+      jets[jetIdx].pt = 0;
+      jets[jetIdx].iEta = iEta + etaShift;
+      jets[jetIdx].iPhi = iPhi;
       bool isLocalMaximum = true;
 
       // Scanning through the grid centered on the seed
@@ -66,10 +71,11 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
       {
         checkMaximumPhiLoop: for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
         {
-          if ((etaIndex == 0) && (phiIndex == 0)) continue;
           char iEtaTmp = iEta + etaIndex;
           char iPhiTmp = iPhi + phiIndex;
           unsigned int towerEnergy = getTowerEnergy(caloGrid, iEtaTmp, iPhiTmp);
+          jets[jetIdx].pt += towerEnergy;
+          if ((etaIndex == 0) && (phiIndex == 0)) continue;
           if (centralPt < towerEnergy) {
             isLocalMaximum = false;
             continue; 
@@ -92,15 +98,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
 
       if (isLocalMaximum)
       {
-        jets[jetIdx].iEta = iEta;
-        jets[jetIdx].iPhi = iPhi;
-        buildJetFromSeed(caloGrid, &jets[jetIdx]);
-        jets[jetIdx].iEta += etaShift;
         jetIdx++;
-        if (jetIdx >= NUMBER_OF_SEEDS) {
-          *numberOfSeedsFound = jetIdx;
-          return;
-        } 
       }
     }
   }
