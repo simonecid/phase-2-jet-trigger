@@ -1,5 +1,5 @@
 #define PHI_GRID_SIZE 72
-#define ETA_GRID_SIZE 82
+#define ETA_GRID_SIZE 9
 #define PHI_JET_SIZE 9
 #define ETA_JET_SIZE 9
 #define NUMBER_OF_SEEDS 128

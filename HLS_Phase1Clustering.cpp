@@ -8,8 +8,6 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
   // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
-  //int nBinsEta = caloGrid.GetNbinsX();
-  //int nBinsPhi = caloGrid.GetNbinsY();
   if (iPhi < 0) 
   {
     iPhi += PHI_GRID_SIZE;
@@ -34,8 +32,6 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 
 void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound, char etaShift)
 {
-  //int nBinsX = caloGrid.GetNbinsX();
-  //int nBinsY = caloGrid.GetNbinsY();
   #if NUMBER_OF_SEEDS > 256
   #pragma message "Working with more than 256 jets, moving to 2-byte index counter, please do not go over 65536 jets or this may break"
   unsigned int jetIdx = 0;
@@ -43,8 +39,6 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
   unsigned char jetIdx = 0;
   #endif
 
-  //int etaHalfSize = (int) this -> _jetIEtaSize/2;
-  //int phiHalfSize = (int) this -> _jetIPhiSize/2;
 
   // for each point of the grid check if it is a local maximum
   // to do so I take a point, and look if is greater than the points around it (in the 9x9 neighborhood)
@@ -98,7 +92,6 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
 
       if (isLocalMaximum)
       {
-        //emplace_back(std::make_tuple(iEta, iPhi));
         jets[jetIdx].iEta = iEta;
         jets[jetIdx].iPhi = iPhi;
         buildJetFromSeed(caloGrid, &jets[jetIdx]);
@@ -114,12 +107,6 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
 
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet) 
 {
-  //int iEta = std::get<0>(seed);
-  //int iPhi = std::get<1>(seed);
-
-  //int etaHalfSize = (int) this -> _jetIEtaSize/2;
-  //int phiHalfSize = (int) this -> _jetIPhiSize/2;
-
   // Scanning through the grid centered on the seed
 
   unsigned short int ptSum = 0;
@@ -133,7 +120,6 @@ void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet)
   }
 
   // Creating a jet with eta phi centered on the seed and momentum equal to the sum of the pt of the components    
-  //reco::Candidate::LorentzVector ptVector;
   jet -> pt = ptSum;
 }
 
