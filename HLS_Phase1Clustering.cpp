@@ -39,7 +39,6 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
   unsigned char jetIdx = 0;
   #endif
 
-
   // for each point of the grid check if it is a local maximum
   // to do so I take a point, and look if is greater than the points around it (in the 9x9 neighborhood)
   // to prevent mutual exclusion, I check greater or equal for points above and right to the one I am considering (including the top-left point)
@@ -68,23 +67,24 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
         checkMaximumPhiLoop: for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
         {
           if ((etaIndex == 0) && (phiIndex == 0)) continue;
+          char iEtaTmp = iEta + etaIndex;
+          char iPhiTmp = iPhi + phiIndex;
+          unsigned int towerEnergy = getTowerEnergy(caloGrid, iEtaTmp, iPhiTmp);
+          if (centralPt < towerEnergy) {
+            isLocalMaximum = false;
+            continue; 
+          }
           if (phiIndex > 0) 
-          {
-            if (phiIndex > -etaIndex)
-            {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else 
-            {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            }
-          } else 
           {
             if (phiIndex >= -etaIndex)
             {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt > getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
-            } else 
+              isLocalMaximum = ((isLocalMaximum) && (centralPt > towerEnergy));
+            }
+          } else 
+          {
+            if (phiIndex > -etaIndex)
             {
-              isLocalMaximum = ((isLocalMaximum) && (centralPt >= getTowerEnergy(caloGrid, iEta + etaIndex, iPhi + phiIndex)));
+              isLocalMaximum = ((isLocalMaximum) && (centralPt > towerEnergy));
             }
           }
         }
@@ -97,7 +97,10 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
         buildJetFromSeed(caloGrid, &jets[jetIdx]);
         jets[jetIdx].iEta += etaShift;
         jetIdx++;
-        if (jetIdx >= NUMBER_OF_SEEDS) return;
+        if (jetIdx >= NUMBER_OF_SEEDS) {
+          *numberOfSeedsFound = jetIdx;
+          return;
+        } 
       }
     }
   }
@@ -131,24 +134,24 @@ void hls_main(const CaloGrid inCaloGrid, const char inEtaShift, Jet inJets[NUMBE
   Jet jets[NUMBER_OF_SEEDS];
   
   // copying grid
-  gridCopyEtaLoop: for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
-  {
-   gridCopyPhiLoop: for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
-   {
-     lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
-   }
-  }
+  //gridCopyEtaLoop: for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  //{
+  // gridCopyPhiLoop: for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+  // {
+  //   lCaloGrid[iEtaIndex][iPhiIndex] = inCaloGrid[iEtaIndex][iPhiIndex];
+  // }
+  //}
 
   // initialising internal jets
-  jetInitialisationLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
-  {
-    jets[jetIndex].pt = 0;
-    jets[jetIndex].iEta = 0;
-    jets[jetIndex].iPhi = 0;
-  }
+  //jetInitialisationLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
+  //{
+  //  jets[jetIndex].pt = 0;
+  //  jets[jetIndex].iEta = 0;
+  //  jets[jetIndex].iPhi = 0;
+  //}
 
   // computing jets
-  buildJets(lCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
+  buildJets(inCaloGrid, jets, &numberOfSeedsFound, lEtaShift);
 
   // copying back the results
   jetOutputCopyLoop: for (unsigned char jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++) 
