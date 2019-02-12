@@ -73,7 +73,10 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char
           char iEtaTmp = iEta + etaIndex;
           char iPhiTmp = iPhi + phiIndex;
           unsigned int towerEnergy = getTowerEnergy(caloGrid, iEtaTmp, iPhiTmp);
-          if (centralPt < towerEnergy) continue; 
+          if (centralPt < towerEnergy) {
+            isLocalMaximum = false;
+            continue; 
+          }
           if (phiIndex > 0) 
           {
             if (phiIndex >= -etaIndex)
