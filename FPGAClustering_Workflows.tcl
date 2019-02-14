@@ -10,7 +10,7 @@
 #
 
 # Defines the mode that will be run in the script
-set mode setup
+set mode init
 # Sets the project name we will work on
 set project_name FPGAClustering
 # Sets the solution name we will work on
