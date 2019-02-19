@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
   grid[4][5] = 10;
   grid[3][5] = 10;
   hls_main(grid, 10, jets, &numberOfJetsFound);
-  assert (numberOfJetsFound == 1);
+  assert(numberOfJetsFound == 1);
   assert(jets[0].pt == 20);
   assert(jets[0].iEta == 14);
   assert(jets[0].iPhi == 5);

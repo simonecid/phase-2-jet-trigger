@@ -2,7 +2,7 @@
 #define ETA_GRID_SIZE 9
 #define PHI_JET_SIZE 9
 #define ETA_JET_SIZE 9
-#define NUMBER_OF_SEEDS 128
+#define NUMBER_OF_SEEDS PHI_GRID_SIZE
 #define SEED_THRESHOLD 5
 
 #ifndef __HLS_PHASE1CLUSTERING_H__
@@ -10,11 +10,13 @@
 
 
 typedef unsigned short int CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
+typedef unsigned short int CaloGridPhiVector[PHI_GRID_SIZE];
+typedef unsigned short int JetGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
 
 typedef struct {
   unsigned short int pt;
-  char iPhi;
-  char iEta;
+  unsigned char iPhi;
+  unsigned char iEta;
 } Jet;
 
 void hls_main(const CaloGrid caloGrid, const char centralIEta, 
@@ -22,5 +24,8 @@ void hls_main(const CaloGrid caloGrid, const char centralIEta,
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);
 void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound, char inEtaShift);
+void buildJets_2(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char* numberOfSeedsFound, char inEtaShift);
+char getNormalisedPhi(char iPhi);
+unsigned short int findJet(const JetGrid caloGrid);
 
 #endif //__HLS_PHASE1CLUSTERING_H__
