@@ -69,7 +69,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   #endif 
   
   #if PHI_SCAN_PIPELINE_AND_UNROLL==true
-  #pragma HLS pipeline
+  #pragma HLS pipeline II=1
   #endif
   seedFinderPhiScanLoop: for (char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
   {
@@ -90,15 +90,38 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   return;
 }
 
-void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jet outJets[NUMBER_OF_SEEDS]) 
+void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
 {
   #pragma HLS array_partition variable=inCaloGrid complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
   #if HLS_MAIN_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
+  
+  CaloGrid lCaloGrid;
+  #pragma HLS array_partition variable=lCaloGrid complete dim=0
+  Jets lJets;
+  #pragma HLS array_partition variable=lJets complete dim=0
+  const char lEtaShift = inEtaShift;
 
-  buildJets(inCaloGrid, outJets, inEtaShift);
+  {
+    #pragma HLS unroll region
+    copyEtaGrid: for(unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++)
+    {
+      copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
+      {
+        lCaloGrid[iEta][iPhi] = inCaloGrid[iEta][iPhi];
+      }
+    }
+  }
+
+  buildJets(lCaloGrid, lJets, lEtaShift);
+
+  copyJets: for(unsigned char jetIdx = 0 ; jetIdx < NUMBER_OF_SEEDS ; jetIdx++)
+  {
+    #pragma HLS unroll
+    outJets[jetIdx] = lJets[jetIdx];
+  }
 
   return;  
 }

@@ -15,16 +15,17 @@
 
 #include "hls_stream.h"
 
-
-typedef unsigned short int CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
-typedef unsigned short int CaloGridPhiVector[PHI_GRID_SIZE];
-typedef unsigned short int JetGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
-
 typedef struct {
   unsigned short int pt;
   char iPhi;
   char iEta;
 } Jet;
+
+typedef unsigned short int CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
+typedef unsigned short int CaloGridPhiVector[PHI_GRID_SIZE];
+typedef unsigned short int JetGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
+typedef Jet Jets[NUMBER_OF_SEEDS];
+
 
 void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jet outJets[NUMBER_OF_SEEDS]);
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
