@@ -24,7 +24,7 @@ set part {xcku115-flva1517-1-c}
 # Sets the clock frequency (if MHz is appended to the number), or period (if only the number is used)
 # 10 = 10 ns
 # 40MHz = 25 ns -> set clock 40MHz
-set clock 10
+set clock 240MHz
 # Sets the top-level function name that is going to be starting point for synthetisation
 set top_function hls_main
 
