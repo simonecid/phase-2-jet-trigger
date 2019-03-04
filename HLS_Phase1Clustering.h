@@ -1,19 +1,20 @@
-#define PHI_GRID_SIZE 15
-#define ETA_GRID_SIZE 9
-#define PHI_JET_SIZE 9
-#define ETA_JET_SIZE 9
-#define NUMBER_OF_SEEDS PHI_GRID_SIZE
-#define SEED_THRESHOLD 5
-#define FINDJET_PIPELINE false
-#define FINDJET_PIPELINE_AND_UNROLL false
-#define PHI_SCAN_PIPELINE_ONLY false
-#define PHI_SCAN_PIPELINE_AND_UNROLL false
-#define HLS_MAIN_FULLY_PIPELINED false
-
 #ifndef __HLS_PHASE1CLUSTERING_H__
 #define __HLS_PHASE1CLUSTERING_H__
 
-#include "hls_stream.h"
+#define PHI_GRID_SIZE 5
+#define ETA_GRID_SIZE 10
+#define PHI_JET_SIZE 5
+#define ETA_JET_SIZE 5
+#define NUMBER_OF_SEEDS PHI_GRID_SIZE
+#define SEED_THRESHOLD 5
+// NOTE: PIPELINE_LENGTH >= 12 increases the latency from 5 to 6
+#define PIPELINE_START 0
+#define PIPELINE_LENGTH PHI_GRID_SIZE
+#define FINDJET_PIPELINE false
+#define FINDJET_PIPELINE_AND_UNROLL true
+#define PHI_SCAN_PIPELINE_ONLY false
+#define PHI_SCAN_PIPELINE_AND_UNROLL false
+#define HLS_MAIN_FULLY_PIPELINED false
 
 typedef struct {
   unsigned short int pt;
@@ -26,7 +27,8 @@ typedef unsigned short int CaloGridPhiVector[PHI_GRID_SIZE];
 typedef unsigned short int JetGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
 typedef Jet Jets[NUMBER_OF_SEEDS];
 
-
+void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
+void copyJets (const Jets inJets, Jets outJets);
 void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jet outJets[NUMBER_OF_SEEDS]);
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);

@@ -10,7 +10,7 @@
 #
 
 # Defines the mode that will be run in the script
-set mode init
+set mode setup
 # Sets the project name we will work on
 set project_name FPGAClustering
 # Sets the solution name we will work on
@@ -49,6 +49,8 @@ switch $mode {
     run_rtl_simulation $project_name $solution_name
   }
   synth {
+    initialise_project $project_name $hls_files $tb_files $top_function
+    initialise_solution $project_name $solution_name $part $clock
     synthetise $project_name $solution_name
   }
   setup {

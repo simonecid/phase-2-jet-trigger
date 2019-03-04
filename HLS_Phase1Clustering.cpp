@@ -3,6 +3,7 @@
 
 #ifndef __SYNTHESIS__
 #include <iostream>
+#include <csignal>
 #endif
 
 char getNormalisedPhi(char iPhi)
@@ -50,8 +51,8 @@ unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 
 void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift)
 {
-  #pragma HLS array_partition variable=caloGrid complete dim=0
-  #pragma HLS array_partition variable=jets complete dim=0
+  //#pragma HLS array_partition variable=caloGrid complete dim=0
+  //#pragma HLS array_partition variable=jets complete dim=0
   #if NUMBER_OF_SEEDS > 256
   #pragma message "Working with more than 256 jets, moving to 2-byte index counter, please do not go over 65536 jets or this may break"
   unsigned int jetIdx = 0;
@@ -69,7 +70,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   #endif 
   
   #if PHI_SCAN_PIPELINE_AND_UNROLL==true
-  #pragma HLS pipeline II=1
+  #pragma HLS pipeline
   #endif
   seedFinderPhiScanLoop: for (char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
   {
@@ -90,6 +91,27 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   return;
 }
 
+void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid)
+{
+  #pragma HLS pipeline
+  copyEtaGrid: for(unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++)
+  {
+    copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
+    {
+      outCaloGrid[iEta][iPhi] = inCaloGrid[iEta][iPhi];
+    }
+  }
+}
+
+void copyJets (const Jets inJets, Jets outJets)
+{
+  #pragma HLS pipeline
+  copyJets: for(unsigned char jetIdx = 0 ; jetIdx < NUMBER_OF_SEEDS ; jetIdx++)
+  {
+    outJets[jetIdx] = inJets[jetIdx];
+  }
+}
+
 void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
 {
   #pragma HLS array_partition variable=inCaloGrid complete dim=0
@@ -97,30 +119,51 @@ void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets)
   #if HLS_MAIN_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
-  
-  CaloGrid lCaloGrid;
+  static CaloGrid lCaloGrid[4];
   #pragma HLS array_partition variable=lCaloGrid complete dim=0
-  Jets lJets;
+  static Jets lJets[PIPELINE_LENGTH];
   #pragma HLS array_partition variable=lJets complete dim=0
-  const char lEtaShift = inEtaShift;
-
+  static char lEtaShift[PIPELINE_LENGTH];
+  #pragma HLS array_partition variable=lEtaShift complete dim=0
+  
+  seedFinderPhiScanPipelineLoop: for (unsigned char iPhiPipeline = PIPELINE_START ; iPhiPipeline < PIPELINE_LENGTH ; iPhiPipeline++) 
   {
-    #pragma HLS unroll region
-    copyEtaGrid: for(unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++)
+    #pragma HLS pipeline rewind
+    CaloGrid lTmpCaloGrid;
+    Jets lTmpJets;
+    char lTmpEtaShift;
+    #pragma HLS array_partition variable=lTmpCaloGrid complete dim=0
+    #pragma HLS array_partition variable=lTmpJets complete dim=0
+
+    //copying stuff from the previous stage or from input
+    if (iPhiPipeline == PIPELINE_START)
     {
-      copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
-      {
-        lCaloGrid[iEta][iPhi] = inCaloGrid[iEta][iPhi];
-      }
+      copyGrid( inCaloGrid, lTmpCaloGrid );
+      lTmpEtaShift = inEtaShift;
+    } 
+    else
+    {
+      copyGrid( lCaloGrid[iPhiPipeline - 1], lTmpCaloGrid );
+      lTmpEtaShift = lEtaShift[iPhiPipeline - 1];
     }
-  }
+    
+    copyJets( lJets[iPhiPipeline], lTmpJets );
+    
+    lTmpJets[iPhiPipeline].pt = findJet(lTmpCaloGrid, ETA_GRID_SIZE/2, iPhiPipeline);
+    lTmpJets[iPhiPipeline].iEta = ETA_GRID_SIZE/2 + lTmpEtaShift;
+    lTmpJets[iPhiPipeline].iPhi = iPhiPipeline;
 
-  buildJets(lCaloGrid, lJets, lEtaShift);
-
-  copyJets: for(unsigned char jetIdx = 0 ; jetIdx < NUMBER_OF_SEEDS ; jetIdx++)
-  {
-    #pragma HLS unroll
-    outJets[jetIdx] = lJets[jetIdx];
+    //copying jets to output or to the next stage
+    if (iPhiPipeline == PIPELINE_LENGTH - 1)
+    {
+      copyJets( lTmpJets, outJets );
+    } 
+    else
+    {
+      copyJets( lTmpJets, lJets[iPhiPipeline + 1] );
+    }
+    lEtaShift[iPhiPipeline] = lTmpEtaShift;
+    copyGrid( lTmpCaloGrid, lCaloGrid[iPhiPipeline] );
   }
 
   return;  
@@ -139,9 +182,9 @@ unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCe
   {
     checkMaximumPhiLoop: for (char phiIndex = -PHI_JET_SIZE/2; phiIndex <= PHI_JET_SIZE/2; phiIndex++)
     {
-      #if FINDJET_PIPELINE
+      #if FINDJET_PIPELINE==true
       #pragma HLS pipeline
-      #endif 
+      #endif
       unsigned int towerEnergy = getTowerEnergy(caloGrid, iEtaCentre + etaIndex, iPhiCentre + phiIndex);
       ptSum += towerEnergy;
       if ((etaIndex == 0) && (phiIndex == 0)) continue;
