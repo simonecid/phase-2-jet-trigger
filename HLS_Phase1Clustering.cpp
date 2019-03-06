@@ -106,6 +106,27 @@ void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid)
   }
 }
 
+void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid)
+{
+  #pragma HLS pipeline
+  copyEtaGrid: for(unsigned char iEta = 1 ; iEta < ETA_GRID_SIZE ; iEta++)
+  {
+    copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
+    {
+      outCaloGrid[iEta - 1][iPhi] = inCaloGrid[iEta][iPhi];
+    }
+  }
+}
+
+void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, char etaIndex)
+{
+  #pragma HLS pipeline
+  copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
+  {
+    outCaloGrid[etaIndex][iPhi] = caloGridPhiSlice[iPhi];
+  }
+}
+
 void copyJets (const Jets inJets, Jets outJets)
 {
   #pragma HLS pipeline
@@ -115,20 +136,27 @@ void copyJets (const Jets inJets, Jets outJets)
   }
 }
 
-void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
+void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets) 
 {
-  #pragma HLS array_partition variable=inCaloGrid complete dim=0
+  #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
   #if HLS_MAIN_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
+  static CaloGrid lCaloGrid;
+  CaloGrid lCaloGridTmp;
+  #pragma HLS array_partition variable=lCaloGrid complete dim=0
+  #pragma HLS array_partition variable=lCaloGridTmp complete dim=0
 
-  pipelinedJetFinder(inCaloGrid, inEtaShift, outJets);
+  copyLine(inCaloGridPhiSlice, lCaloGrid, 8);
+  copyGrid(lCaloGrid, lCaloGridTmp);
+  shiftGridLeft(lCaloGrid, lCaloGrid);
+  pipelinedJetFinder(lCaloGridTmp, outJets);
 
   return;
 }
 
-void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
+void pipelinedJetFinder(CaloGrid inCaloGrid, Jets outJets) 
 { 
   #if JET_FINDER_PIPELINE==true
   #pragma HLS pipeline
@@ -142,10 +170,8 @@ void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets
     copyGrid( inCaloGrid, lTmpCaloGrid );
     #pragma HLS array_partition variable=lTmpCaloGrid complete dim=0
     Jet lTmpJet;
-    char lTmpEtaShift;
-    lTmpEtaShift = inEtaShift;
     lTmpJet.pt = findJet(lTmpCaloGrid, ETA_GRID_SIZE/2, iPhi);
-    lTmpJet.iEta = ETA_GRID_SIZE/2 + lTmpEtaShift;
+    lTmpJet.iEta = ETA_JET_SIZE/2;
     lTmpJet.iPhi = iPhi;
     
     outJets[iPhi] = lTmpJet;

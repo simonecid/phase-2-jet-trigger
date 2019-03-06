@@ -1,7 +1,7 @@
 #ifndef __HLS_PHASE1CLUSTERING_H__
 #define __HLS_PHASE1CLUSTERING_H__
 
-#define PHI_GRID_SIZE 18
+#define PHI_GRID_SIZE 12
 #define ETA_GRID_SIZE 9
 #define PHI_JET_SIZE 9
 #define ETA_JET_SIZE 9
@@ -34,12 +34,14 @@ typedef Jet Jets[NUMBER_OF_SEEDS];
 
 void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
 void copyJets (const Jets inJets, Jets outJets);
-void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jet outJets[NUMBER_OF_SEEDS]);
+void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets);
 pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);
 void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], char inEtaShift);
 char getNormalisedPhi(char iPhi);
 pt_type findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre);
-void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets);
+void pipelinedJetFinder(CaloGrid inCaloGrid, Jets outJets);
+void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, char etaIndex);
+void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
 
 #endif //__HLS_PHASE1CLUSTERING_H__
