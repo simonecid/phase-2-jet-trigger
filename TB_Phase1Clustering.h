@@ -3,7 +3,7 @@
 
 #include "HLS_Phase1Clustering.h"
 
-void cleanGrid(CaloGrid grid, unsigned short int value=0);
+void cleanGrid(CaloGrid grid, pt_type value=0);
 void cleanJets(Jets jets);
 void test9x9();
 void test5x5();

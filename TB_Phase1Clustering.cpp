@@ -15,7 +15,7 @@ void cleanJets(Jets jets)
   return;
 }
 
-void cleanGrid(CaloGrid grid, unsigned short int value) 
+void cleanGrid(CaloGrid grid, pt_type value) 
 {
   for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
   {

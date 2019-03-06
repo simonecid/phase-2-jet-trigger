@@ -19,7 +19,7 @@ char getNormalisedPhi(char iPhi)
   return iPhi;  
 }
 
-unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
+pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -152,7 +152,7 @@ void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets
   }
 }
 
-unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre) 
+pt_type findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre) 
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -160,9 +160,9 @@ unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCe
   #if FINDJET_PIPELINE_AND_UNROLL==true
   #pragma HLS pipeline
   #endif
-  unsigned short int centralPt = caloGrid[iEtaCentre][iPhiCentre];
+  pt_type centralPt = caloGrid[iEtaCentre][iPhiCentre];
   bool isLocalMaximum = (centralPt < SEED_THRESHOLD) ? false : true;
-  unsigned short int ptSum = 0;
+  pt_type ptSum = 0;
   // Scanning through the grid centered on the seed
   checkMaximumEtaLoop: for (char etaIndex = -ETA_JET_SIZE/2; etaIndex <= ETA_JET_SIZE/2; etaIndex++)
   {
@@ -193,5 +193,8 @@ unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCe
       }
     }
   }
-  return isLocalMaximum ? ptSum : 0;
+  if (isLocalMaximum) 
+    return ptSum;
+  else
+    return 0;
 }
