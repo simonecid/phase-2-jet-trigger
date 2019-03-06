@@ -29,8 +29,8 @@ void cleanGrid(CaloGrid grid, unsigned short int value)
 
 int main(int argc, char const *argv[])
 {
-  test5x5();
-  //test9x9();
+  //test5x5();
+  test9x9();
   return 0;
 }
 

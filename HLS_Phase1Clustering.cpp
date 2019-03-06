@@ -119,51 +119,49 @@ void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets)
   #if HLS_MAIN_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
-  CaloGrid lCaloGrid[PIPELINE_LENGTH];
-  #pragma HLS array_partition variable=lCaloGrid complete dim=0
-  Jets lJets[PIPELINE_LENGTH];
-  #pragma HLS array_partition variable=lJets complete dim=0
-  char lEtaShift[PIPELINE_LENGTH];
-  #pragma HLS array_partition variable=lEtaShift complete dim=0
+  //CaloGrid lCaloGridBuffer[BUFFER_LENGTH];
+  //#pragma HLS array_partition variable=lCaloGridBuffer complete dim=0
+  //Jets lJetBuffer[BUFFER_LENGTH];
+  //#pragma HLS array_partition variable=lJetBuffer complete dim=0
+  //char lEtaShift[BUFFER_LENGTH];
+  //#pragma HLS array_partition variable=lEtaShift complete dim=0
   
-  seedFinderPhiScanPipelineLoop: for (unsigned char iPhiPipeline = PIPELINE_START ; iPhiPipeline < PIPELINE_LENGTH ; iPhiPipeline++) 
+  //static unsigned char roundRobinIndex = 0;
+
+  //CaloGrid & lCaloGrid = lCaloGridBuffer[roundRobinIndex];
+  //Jets lJets;
+  //lEtaShift[roundRobinIndex] = inEtaShift;
+  //roundRobinIndex = (roundRobinIndex + 1) % BUFFER_LENGTH;
+  //copyGrid(inCaloGrid, lCaloGrid);
+
+  pipelinedJetFinder(inCaloGrid, inEtaShift, outJets);
+
+  //copyJets(lJets, outJets);
+
+  return;
+}
+
+void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
+{ 
+  #pragma HLS pipeline rewind II=1
+  seedFinderPhiScanPipelinedLoop: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++) 
   {
     CaloGrid lTmpCaloGrid;
-    Jets lTmpJets;
-    char lTmpEtaShift;
+    copyGrid( inCaloGrid, lTmpCaloGrid );
     #pragma HLS array_partition variable=lTmpCaloGrid complete dim=0
-    #pragma HLS array_partition variable=lTmpJets complete dim=0
+    //Jets lTmpJets;
+    Jet lTmpJet;
+    char lTmpEtaShift;
+    lTmpEtaShift = inEtaShift;
+    //#pragma HLS array_partition variable=lTmpJets complete dim=0
 
     //copying stuff from the previous stage or from input
-    if (iPhiPipeline == PIPELINE_START)
-    {
-      copyGrid( inCaloGrid, lTmpCaloGrid );
-      lTmpEtaShift = inEtaShift;
-    } 
-    else
-    {
-      copyGrid( lCaloGrid[iPhiPipeline - 1], lTmpCaloGrid );
-      lTmpEtaShift = lEtaShift[iPhiPipeline - 1];
-    }
-    copyGrid( lTmpCaloGrid, lCaloGrid[iPhiPipeline] );
-    lEtaShift[iPhiPipeline] = lTmpEtaShift;
-    copyJets( lJets[iPhiPipeline], lTmpJets );
+    lTmpJet.pt = findJet(lTmpCaloGrid, ETA_GRID_SIZE/2, iPhi);
+    lTmpJet.iEta = ETA_GRID_SIZE/2 + lTmpEtaShift;
+    lTmpJet.iPhi = iPhi;
     
-    lTmpJets[iPhiPipeline].pt = findJet(lTmpCaloGrid, ETA_GRID_SIZE/2, iPhiPipeline);
-    lTmpJets[iPhiPipeline].iEta = ETA_GRID_SIZE/2 + lTmpEtaShift;
-    lTmpJets[iPhiPipeline].iPhi = iPhiPipeline;
-
-    //copying jets to output or to the next stage
-    if (iPhiPipeline == PIPELINE_LENGTH - 1)
-    {
-      copyJets( lTmpJets, outJets );
-    } 
-    else
-    {
-      copyJets( lTmpJets, lJets[iPhiPipeline + 1] );
-    }
+    outJets[iPhi] = lTmpJet;
   }
-  return;  
 }
 
 unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre) 
