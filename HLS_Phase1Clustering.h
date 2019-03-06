@@ -1,20 +1,21 @@
 #ifndef __HLS_PHASE1CLUSTERING_H__
 #define __HLS_PHASE1CLUSTERING_H__
 
-#define PHI_GRID_SIZE 6
-#define ETA_GRID_SIZE 5
-#define PHI_JET_SIZE 5
-#define ETA_JET_SIZE 5
+#define PHI_GRID_SIZE 18
+#define ETA_GRID_SIZE 9
+#define PHI_JET_SIZE 9
+#define ETA_JET_SIZE 9
 #define NUMBER_OF_SEEDS PHI_GRID_SIZE
 #define SEED_THRESHOLD 5
 // NOTE: PIPELINE_LENGTH >= 12 increases the latency from 5 to 6
 #define PIPELINE_START 0
 #define BUFFER_LENGTH PHI_GRID_SIZE
 #define FINDJET_PIPELINE false
-#define FINDJET_PIPELINE_AND_UNROLL true
+#define FINDJET_PIPELINE_AND_UNROLL false
 #define PHI_SCAN_PIPELINE_ONLY false
 #define PHI_SCAN_PIPELINE_AND_UNROLL false
-#define HLS_MAIN_FULLY_PIPELINED false
+#define HLS_MAIN_FULLY_PIPELINED true
+#define INLINE_EVERYTHING true
 
 typedef struct {
   unsigned short int pt;

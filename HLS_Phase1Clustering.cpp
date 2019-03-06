@@ -21,6 +21,9 @@ char getNormalisedPhi(char iPhi)
 
 unsigned short int getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
 {
+  #if INLINE_EVERYTHING==true
+  #pragma HLS inline
+  #endif
   // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
   if (iPhi < 0) 
@@ -119,43 +122,28 @@ void hls_main(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets)
   #if HLS_MAIN_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
-  //CaloGrid lCaloGridBuffer[BUFFER_LENGTH];
-  //#pragma HLS array_partition variable=lCaloGridBuffer complete dim=0
-  //Jets lJetBuffer[BUFFER_LENGTH];
-  //#pragma HLS array_partition variable=lJetBuffer complete dim=0
-  //char lEtaShift[BUFFER_LENGTH];
-  //#pragma HLS array_partition variable=lEtaShift complete dim=0
-  
-  //static unsigned char roundRobinIndex = 0;
-
-  //CaloGrid & lCaloGrid = lCaloGridBuffer[roundRobinIndex];
-  //Jets lJets;
-  //lEtaShift[roundRobinIndex] = inEtaShift;
-  //roundRobinIndex = (roundRobinIndex + 1) % BUFFER_LENGTH;
-  //copyGrid(inCaloGrid, lCaloGrid);
 
   pipelinedJetFinder(inCaloGrid, inEtaShift, outJets);
-
-  //copyJets(lJets, outJets);
 
   return;
 }
 
 void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets) 
 { 
-  #pragma HLS pipeline rewind II=1
+  #if JET_FINDER_PIPELINE==true
+  #pragma HLS pipeline
+  #endif
+  #if INLINE_EVERYTHING==true
+  #pragma HLS inline
+  #endif
   seedFinderPhiScanPipelinedLoop: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++) 
   {
     CaloGrid lTmpCaloGrid;
     copyGrid( inCaloGrid, lTmpCaloGrid );
     #pragma HLS array_partition variable=lTmpCaloGrid complete dim=0
-    //Jets lTmpJets;
     Jet lTmpJet;
     char lTmpEtaShift;
     lTmpEtaShift = inEtaShift;
-    //#pragma HLS array_partition variable=lTmpJets complete dim=0
-
-    //copying stuff from the previous stage or from input
     lTmpJet.pt = findJet(lTmpCaloGrid, ETA_GRID_SIZE/2, iPhi);
     lTmpJet.iEta = ETA_GRID_SIZE/2 + lTmpEtaShift;
     lTmpJet.iPhi = iPhi;
@@ -166,6 +154,9 @@ void pipelinedJetFinder(CaloGrid inCaloGrid, const char inEtaShift, Jets outJets
 
 unsigned short int findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre) 
 {
+  #if INLINE_EVERYTHING==true
+  #pragma HLS inline
+  #endif
   #if FINDJET_PIPELINE_AND_UNROLL==true
   #pragma HLS pipeline
   #endif
