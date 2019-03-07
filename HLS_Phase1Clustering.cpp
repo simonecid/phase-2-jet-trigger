@@ -136,7 +136,7 @@ void copyJets (const Jets inJets, Jets outJets)
   }
 }
 
-void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets) 
+void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
