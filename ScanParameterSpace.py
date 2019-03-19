@@ -18,18 +18,19 @@ from BuildDataframeReport import BuildDataframeFromReports
 
 parameters = {}
 
-parameters["PHI_GRID_SIZE"] = 1
-parameters["ETA_GRID_SIZE"] = 2
-parameters["PHI_JET_SIZE"] = 3
+parameters["PHI_GRID_SIZE"] = 72
+#parameters["ETA_GRID_SIZE"] = 2
+#parameters["PHI_JET_SIZE"] = 3
 parameters["ETA_JET_SIZE"] = 4
-parameters["NUMBER_OF_SEEDS"] = 5
+#parameters["NUMBER_OF_SEEDS"] = 5
 
 values = {}
-values["PHI_GRID_SIZE"] = [9, 45, 72]
-values["ETA_GRID_SIZE"] = [9, 45, 82]
-values["PHI_JET_SIZE"] = [3, 5, 7, 9]
+values["PHI_GRID_SIZE"] = [72]
+#values["PHI_GRID_SIZE"] = [9, 11]
+#values["ETA_GRID_SIZE"] = [9, 45, 82]
+#values["PHI_JET_SIZE"] = [3, 5, 7, 9]
 values["ETA_JET_SIZE"] = [3, 5, 7, 9]
-values["NUMBER_OF_SEEDS"] = [64, 128]
+#values["NUMBER_OF_SEEDS"] = [64, 128]
 
 saveFolder = "reports"
 
@@ -56,7 +57,7 @@ def runVivadoTCL(tclPath):
   returnValue = system("vivado_hls FPGAClustering_Synthetise.tcl")
   # checking if return value != 0 to look for errors
   if WEXITSTATUS(returnValue) != 0:
-    raise RuntimeError("vivado_hls returned value " + WEXITSTATUS(returnValue) + "check log and latest header for more info. Aborting scan.")
+    raise RuntimeError("vivado_hls returned value " + str(WEXITSTATUS(returnValue)) + ". Check log and latest header for more info. Aborting scan.")
 
 def addParametersAndStore(inputFile, parameters, outputFile):
   # opening the file
@@ -72,36 +73,24 @@ def addParametersAndStore(inputFile, parameters, outputFile):
 
 if __name__ == "__main__":
   
-  for combination in product(values["PHI_GRID_SIZE"], values["ETA_GRID_SIZE"], values["PHI_JET_SIZE"], values["ETA_JET_SIZE"], values["NUMBER_OF_SEEDS"]):
-    parameters["PHI_GRID_SIZE"] = combination[0]
-    parameters["ETA_GRID_SIZE"] = combination[1]
-    parameters["PHI_JET_SIZE"] = combination[2]
-    parameters["ETA_JET_SIZE"] = combination[3]
-    parameters["NUMBER_OF_SEEDS"] = combination[4]
+  # build list containing the dictionary labels
+  labels = [label for label in parameters]
+  # # preparing a list containing the parameters to be passed to product()
+  product_parameters = [values[label] for label in labels]
+
+  for combination in product(*product_parameters):
+
+    for index in range(0, len(labels)):
+      parameters[labels[index]] = combination[index]
+
     buildHeader("HLS_Phase1Clustering.h", parameters)
     runVivadoTCL("FPGAClustering_Synthetise.tcl")
     addParametersAndStore(
       "FPGAClustering/FPGAClustering/syn/report/hls_main_csynth.xml",
       parameters,
-      saveFolder + "/hls_main_csynth"
-      + "_" + str(combination[0])
-      + "_" + str(combination[1])
-      + "_" + str(combination[2])
-      + "_" + str(combination[3])
-      + "_" + str(combination[4])
-      + ".xml"
-    )
-    addParametersAndStore(
-      "FPGAClustering/FPGAClustering/syn/report/buildJets_csynth.xml",
-      parameters,
-      saveFolder + "/buildJets_csynth"
-      + "_" + str(combination[0])
-      + "_" + str(combination[1])
-      + "_" + str(combination[2])
-      + "_" + str(combination[3])
-      + "_" + str(combination[4])
-      + ".xml"
+      saveFolder + "/hls_main_csynth" + "_" + # base name
+      str.join("_", [str(v) for v in combination]) + # parameter values
+      ".xml" # extension
     )
   
-  BuildDataframeFromReports(saveFolder + "/hls_main_csynth*.xml", saveFolder + "/hls_main_csynth_dataframe.csv")
-  BuildDataframeFromReports(saveFolder + "/buildJets_csynth*.xml", saveFolder + "/buildJets_csynth_dataframe.csv")
+  BuildDataframeFromReports(saveFolder + "/hls_main_csynth*.xml", saveFolder + "/hls_main_csynth_dataframe.csv", labels)
