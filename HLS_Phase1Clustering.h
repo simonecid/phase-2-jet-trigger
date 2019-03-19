@@ -2,9 +2,9 @@
 #define __HLS_PHASE1CLUSTERING_H__
 
 #define PHI_GRID_SIZE 72
-#define ETA_GRID_SIZE 9
-#define PHI_JET_SIZE 9
 #define ETA_JET_SIZE 9
+#define ETA_GRID_SIZE ETA_JET_SIZE
+#define PHI_JET_SIZE ETA_JET_SIZE
 #define NUMBER_OF_SEEDS PHI_GRID_SIZE
 #define SEED_THRESHOLD 5
 // NOTE: PIPELINE_LENGTH >= 12 increases the latency from 5 to 6

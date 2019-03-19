@@ -148,7 +148,7 @@ void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset)
   #pragma HLS array_partition variable=lCaloGrid complete dim=0
   #pragma HLS array_partition variable=lCaloGridTmp complete dim=0
 
-  copyLine(inCaloGridPhiSlice, lCaloGrid, 8);
+  copyLine(inCaloGridPhiSlice, lCaloGrid, ETA_GRID_SIZE - 1);
   copyGrid(lCaloGrid, lCaloGridTmp);
   shiftGridLeft(lCaloGrid, lCaloGrid);
   pipelinedJetFinder(lCaloGridTmp, outJets);
