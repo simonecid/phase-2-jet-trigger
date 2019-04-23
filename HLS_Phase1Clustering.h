@@ -1,8 +1,15 @@
 #ifndef __HLS_PHASE1CLUSTERING_H__
 #define __HLS_PHASE1CLUSTERING_H__
 
-#define PHI_GRID_SIZE 72
-#define ETA_JET_SIZE 9
+/*
+The code has an internal buffer which is PHI_GRID_SIZE * ETA_GRID_SIZE big
+Each clock cycle I receive PHI_GRID_SIZE bins (all in the same eta).
+I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JET_SIZE region
+*/
+
+
+#define PHI_GRID_SIZE 384
+#define ETA_JET_SIZE 5
 #define ETA_GRID_SIZE ETA_JET_SIZE
 #define PHI_JET_SIZE ETA_JET_SIZE
 #define NUMBER_OF_SEEDS PHI_GRID_SIZE
@@ -23,8 +30,8 @@ typedef ap_uint<10> pt_type;
 
 typedef struct {
   pt_type pt;
-  char iPhi;
-  char iEta;
+  unsigned char iPhi;
+  unsigned char iEta;
 } Jet;
 
 typedef pt_type CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
@@ -35,13 +42,13 @@ typedef Jet Jets[NUMBER_OF_SEEDS];
 void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
 void copyJets (const Jets inJets, Jets outJets);
 void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset);
-pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
+pt_type getTowerEnergy(const CaloGrid caloGrid, unsigned char iEta, unsigned char iPhi);
 void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);
-void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], char inEtaShift);
-char getNormalisedPhi(char iPhi);
-pt_type findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre);
+void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char inEtaShift);
+unsigned char getNormalisedPhi(unsigned char iPhi);
+pt_type findJet(const CaloGrid caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
 void pipelinedJetFinder(CaloGrid inCaloGrid, Jets outJets);
-void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, char etaIndex);
+void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, unsigned char etaIndex);
 void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
 
 #endif //__HLS_PHASE1CLUSTERING_H__

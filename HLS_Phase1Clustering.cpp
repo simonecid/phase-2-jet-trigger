@@ -6,7 +6,7 @@
 #include <csignal>
 #endif
 
-char getNormalisedPhi(char iPhi)
+unsigned char getNormalisedPhi(unsigned char iPhi)
 {
   if (iPhi < 0) 
   {
@@ -19,7 +19,7 @@ char getNormalisedPhi(char iPhi)
   return iPhi;  
 }
 
-pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
+pt_type getTowerEnergy(const CaloGrid caloGrid, unsigned char iEta, unsigned char iPhi)
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -52,7 +52,7 @@ pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi)
   return caloGrid[iEta][iPhi];
 }
 
-void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift)
+void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], unsigned char etaShift)
 {
   //#pragma HLS array_partition variable=caloGrid complete dim=0
   //#pragma HLS array_partition variable=jets complete dim=0
@@ -60,7 +60,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   #pragma message "Working with more than 256 jets, moving to 2-byte index counter, please do not go over 65536 jets or this may break"
   unsigned int jetIdx = 0;
   #else
-  char jetIdx = 0;
+  unsigned char jetIdx = 0;
   #endif
 
   // for each point of the grid check if it is a local maximum
@@ -75,7 +75,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
   #if PHI_SCAN_PIPELINE_AND_UNROLL==true
   #pragma HLS pipeline
   #endif
-  seedFinderPhiScanLoop: for (char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
+  seedFinderPhiScanLoop: for (unsigned char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
   {
     //Excluding eta range in which the grid falls out of bounds
     #if ETA_GRID_SIZE > 256
@@ -84,7 +84,7 @@ void buildJets(const CaloGrid caloGrid, Jet jets[NUMBER_OF_SEEDS], char etaShift
     #if PHI_SCAN_PIPELINE_ONLY==true
     #pragma HLS pipeline
     #endif
-    seedFinderEtaScanLoop: for (char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
+    seedFinderEtaScanLoop: for (unsigned char iEta = ETA_JET_SIZE/2; iEta < ETA_GRID_SIZE - ETA_JET_SIZE/2; iEta++)
     {
       jets[iPhi].pt = findJet(caloGrid, iEta, iPhi);
       jets[iPhi].iEta = iEta + etaShift;
@@ -118,7 +118,7 @@ void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid)
   }
 }
 
-void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, char etaIndex)
+void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, unsigned char etaIndex)
 {
   #pragma HLS pipeline
   copyPhiGrid: for (unsigned char iPhi = 0 ; iPhi < PHI_GRID_SIZE ; iPhi++)
@@ -178,7 +178,7 @@ void pipelinedJetFinder(CaloGrid inCaloGrid, Jets outJets)
   }
 }
 
-pt_type findJet(const CaloGrid caloGrid, char iEtaCentre, char iPhiCentre) 
+pt_type findJet(const CaloGrid caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre) 
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
