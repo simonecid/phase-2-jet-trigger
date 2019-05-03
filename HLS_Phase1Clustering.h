@@ -7,16 +7,17 @@ Each clock cycle I receive PHI_GRID_SIZE bins (all in the same eta).
 I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JET_SIZE region
 */
 
-
-#define PHI_GRID_SIZE 384
+// size of the buffer holding the calogrid
+#define PHI_GRID_SIZE 72
 #define ETA_JET_SIZE 5
-#define ETA_GRID_SIZE ETA_JET_SIZE
+
+#define ETA_GRID_SIZE 96
 #define PHI_JET_SIZE ETA_JET_SIZE
 #define NUMBER_OF_SEEDS PHI_GRID_SIZE
+//threshold for seeding
 #define SEED_THRESHOLD 5
-// NOTE: PIPELINE_LENGTH >= 12 increases the latency from 5 to 6
-#define PIPELINE_START 0
-#define BUFFER_LENGTH PHI_GRID_SIZE
+
+//controls what is pipelined, HLS_MAIN_FULLY_PIPELINED sets everything to true
 #define FINDJET_PIPELINE false
 #define FINDJET_PIPELINE_AND_UNROLL false
 #define PHI_SCAN_PIPELINE_ONLY false
@@ -24,31 +25,39 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #define HLS_MAIN_FULLY_PIPELINED true
 #define INLINE_EVERYTHING true
 
+#if PHI_GRID_SIZE>=128
+#error "PHI_GRID_SIZE is >= 128, this is not going to work"
+#endif
+#if ETA_GRID_SIZE>=128
+#error "ETA_GRID_SIZE is >= 128, this is not going to work"
+#endif
+
 #include "ap_int.h"
 
 typedef ap_uint<10> pt_type;
+typedef unsigned char eta_type;
+typedef unsigned char phi_type;
+
 
 typedef struct {
   pt_type pt;
-  unsigned char iPhi;
-  unsigned char iEta;
+  phi_type iPhi;
+  eta_type iEta;
 } Jet;
 
 typedef pt_type CaloGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
+typedef pt_type CaloGridBuffer[ETA_JET_SIZE][PHI_GRID_SIZE];
 typedef pt_type CaloGridPhiVector[PHI_GRID_SIZE];
-typedef pt_type JetGrid[ETA_GRID_SIZE][PHI_GRID_SIZE];
 typedef Jet Jets[NUMBER_OF_SEEDS];
+typedef Jets TMJets[ETA_GRID_SIZE];
 
 void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
-void copyJets (const Jets inJets, Jets outJets);
 void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset);
-pt_type getTowerEnergy(const CaloGrid caloGrid, unsigned char iEta, unsigned char iPhi);
-void buildJetFromSeed(const CaloGrid caloGrid, Jet* jet);
-void buildJets(const CaloGrid caloGrid, Jet seeds[NUMBER_OF_SEEDS], unsigned char inEtaShift);
-unsigned char getNormalisedPhi(unsigned char iPhi);
+pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
 pt_type findJet(const CaloGrid caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
-void pipelinedJetFinder(CaloGrid inCaloGrid, Jets outJets);
+void runJetFinders(const CaloGrid inCaloGrid, Jets outJets);
 void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, unsigned char etaIndex);
 void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
+void clearGrid (CaloGridBuffer inCaloGrid);
 
 #endif //__HLS_PHASE1CLUSTERING_H__

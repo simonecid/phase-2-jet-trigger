@@ -3,10 +3,30 @@
 #include <iostream>
 #include <csignal>
 #include <assert.h>
+#include <fstream>
+
+bool readCaloGridBufferFromFile(const std::string &filepath, CaloGrid caloGrid)
+{
+  std::ifstream inFile(filepath);
+  if (inFile.is_open())
+  {
+    for (uint x = 0; x < PHI_GRID_SIZE; x++)
+    {
+      for(uint y = 0; y < ETA_GRID_SIZE; y++)
+      {
+        inFile >> caloGrid[y][x];
+      }
+    }
+    inFile.close()
+    return true;
+  } else {
+    return false;
+  }
+}
 
 void cleanJets(Jets jets)
 {
-  for (char jetIdx = 0; jetIdx < NUMBER_OF_SEEDS; jetIdx++) 
+  for (unsigned char jetIdx = 0; jetIdx < NUMBER_OF_SEEDS; jetIdx++) 
   {
     jets[jetIdx].pt = 0;
     jets[jetIdx].iEta = 0;
@@ -17,9 +37,9 @@ void cleanJets(Jets jets)
 
 void cleanGrid(CaloGrid grid, pt_type value) 
 {
-  for (char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
   {
-    for (char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+    for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
     {
       grid[iEtaIndex][iPhiIndex] = value;
     }
@@ -29,8 +49,7 @@ void cleanGrid(CaloGrid grid, pt_type value)
 
 int main(int argc, char const *argv[])
 {
-  //test5x5();
-  test9x9();
+  
   return 0;
 }
 
@@ -208,4 +227,18 @@ void test9x9()
     assert(jets[x].iPhi == x);
   }
   std::cout << "All test have been successfully passed." << std::endl;
+}
+
+void runJetFinder(const CaloGrid caloGrid, TMJets tmJets)
+{
+  for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  {
+    CaloGridPhiVector phiVector;
+    for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+    {
+      phiVector[iPhiIndex] = caloGrid[iEtaIndex][iPhiIndex];
+    }
+    if (iEtaIndex == 0) hls_main(phiVector, tmJets[iEtaIndex], true);
+    else hls_main(phiVector, jets, false);
+  }
 }
