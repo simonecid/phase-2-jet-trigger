@@ -9,9 +9,9 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 
 // size of the buffer holding the calogrid
 #define PHI_GRID_SIZE 72
+#define ETA_GRID_SIZE 96
 #define ETA_JET_SIZE 5
 
-#define ETA_GRID_SIZE 96
 #define PHI_JET_SIZE ETA_JET_SIZE
 #define NUMBER_OF_SEEDS PHI_GRID_SIZE
 //threshold for seeding
@@ -51,13 +51,18 @@ typedef pt_type CaloGridPhiVector[PHI_GRID_SIZE];
 typedef Jet Jets[NUMBER_OF_SEEDS];
 typedef Jets TMJets[ETA_GRID_SIZE];
 
-void copyGrid (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
+void hls_copyGrid (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
 void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset);
-pt_type getTowerEnergy(const CaloGrid caloGrid, char iEta, char iPhi);
-pt_type findJet(const CaloGrid caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
-void runJetFinders(const CaloGrid inCaloGrid, Jets outJets);
-void copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGrid outCaloGrid, unsigned char etaIndex);
-void shiftGridLeft (const CaloGrid inCaloGrid, CaloGrid outCaloGrid);
-void clearGrid (CaloGridBuffer inCaloGrid);
+pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi);
+pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
+void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets);
+void hls_copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGridBuffer outCaloGrid, unsigned char etaIndex);
+void hls_shiftGridLeft (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
+void hls_clearGrid(CaloGridBuffer grid);
+void hls_clearJets(TMJets jets);
+
+#ifndef __SYNTHESIS__
+void printCaloGridBuffer(const CaloGridBuffer caloGrid);
+#endif
 
 #endif //__HLS_PHASE1CLUSTERING_H__
