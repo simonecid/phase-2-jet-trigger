@@ -10,15 +10,15 @@
 #
 
 # Defines the mode that will be run in the script
-set mode setup
+set mode init
 # Sets the project name we will work on
-set project_name FPGAClustering
+set project_name hls_histogrammer
 # Sets the solution name we will work on
-set solution_name FPGAClustering
+set solution_name hls_histogrammer
 # Sets the HLS files we want to synthetise 
-set hls_files [list HLS_Phase1Clustering.cpp]
+set hls_files [list HLS_Histogrammer.cpp, HLS/HistogramEtaPhi.cpp]
 # Sets the test bench files
-set tb_files [list TB_Phase1Clustering.cpp]
+set tb_files [list TB_Histogrammer.cpp]
 # Sets the device we want to synthetise for
 set part {xcku115-flva1517-1-c}
 # Sets the clock frequency (if MHz is appended to the number), or period (if only the number is used)
@@ -26,7 +26,7 @@ set part {xcku115-flva1517-1-c}
 # 40MHz = 25 ns -> set clock 40MHz
 set clock 240MHz
 # Sets the top-level function name that is going to be starting point for synthetisation
-set top_function hls_main
+set top_function hls_histogrammer
 
 # Collection of utility procedures
 source CommonProcedures.tcl
