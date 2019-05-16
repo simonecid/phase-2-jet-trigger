@@ -5,42 +5,39 @@ void copyInputs (const Inputs srcInputs, Inputs destInputs)
 {
   #pragma HLS inline
   #pragma HLS pipeline
-  for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK ; x++)
+  copyInputsLoop: for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK ; x++)
   {
-    destInputs[x] = srcInputs[x];
+    destInputs[x].iEta = srcInputs[x].iEta;
+    destInputs[x].iPhi = srcInputs[x].iPhi;
+    destInputs[x].pt = srcInputs[x].pt;
   }
 }
 
-void hls_histogrammer(Inputs *inputs, hls::TBins *bins, bool reset)
+void hls_histogrammer(const Inputs inputs, hls::TBins bins,const bool reset)
 {
-  #pragma HLS partition variable=inputs dim=0
-  #pragma HLS partition variable=bins dim=0
+  #pragma HLS array_partition variable=inputs dim=0
+  #pragma HLS array_partition variable=bins dim=0
   #pragma HLS pipeline
 
-
-  static hls::HistogramEtaPhi caloGrid;
-  #pragma HLS partition variable=caloGrid._histogram complete dim=0
-  #pragma HLS partition variable=HistogramEtaPhi._xBins complete dim=0
-  #pragma HLS partition variable=HistogramEtaPhi._yBins complete dim=0
+  hls::HistogramEtaPhi caloGrid;
 
   bool lReset = reset;
 
   Inputs lInputs;
-  #pragma HLS partition variable=lInputs dim=0
+  #pragma HLS array_partition variable=lInputs dim=0
   copyInputs(inputs, lInputs);
-
-  if (lReset)
+  caloGrid.reset();
+  //if (lReset)
+  //{
+  //  caloGrid.reset();
+  //}
+  
+  fillHistogramLoop:for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
   {
-    caloGrid.reset();
+    caloGrid.fill(lInputs[x].iEta, lInputs[x].iPhi, lInputs[x].pt);
   }
   
-  for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
-  {
-    const Inputs & lInput = lInputs[x];
-    caloGrid.fill(lInput.iEta, lInput.iPhi, lInput.pt);
-  }
-
-  for (unsigned int etaIndex = 0; etaIndex < ETA_GRID_SIZE; etaIndex++)
+  outputBinsLoop: for (unsigned int etaIndex = 0; etaIndex < ETA_GRID_SIZE; etaIndex++)
   {
     for (unsigned int phiIndex = 0; phiIndex < PHI_GRID_SIZE; phiIndex++)
     {

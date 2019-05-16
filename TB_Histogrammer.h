@@ -1,13 +1,10 @@
 #ifndef __TB_PHASE1CLUSTERING_H__
 #define __TB_PHASE1CLUSTERING_H__
 
-#include "HLS_Phase1Clustering.h"
+#include "HLS_Histogrammer.h"
+#include "HLS/HistogramEtaPhi.h"
 
-void clearGrid(CaloGrid grid, pt_type value=0);
-void clearJets(TMJets jets);
-void test9x9();
-void test5x5();
-bool readCaloGridFromFile(const std::string &filepath, CaloGridBuffer caloGridBuffer);
-void runJetFinder(const CaloGridBuffer caloGridBuffer, TMJets tmJets);
-void printCaloGrid(const CaloGrid caloGrid);
+bool readInputsFromFile(const std::string &filepath, Inputs inputs);
+void resetInputs(Inputs inputs);
+bool readBinsFromFile(const std::string &filepath, hls::TBins histogram);
 #endif //__TB_PHASE1CLUSTERING_H__
