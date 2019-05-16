@@ -1,0 +1,4 @@
+*.log
+HLS_Histogrammer/
+.vscode/
+*.dat
