@@ -12,13 +12,13 @@
 # Defines the mode that will be run in the script
 set mode init
 # Sets the project name we will work on
-set project_name hls_histogrammer
+set project_name HLS_Histogrammer
 # Sets the solution name we will work on
-set solution_name hls_histogrammer
+set solution_name KU115
 # Sets the HLS files we want to synthetise 
-set hls_files [list HLS_Histogrammer.cpp, HLS/HistogramEtaPhi.cpp]
+set hls_files [list "HLS_Histogrammer.cpp" "HLS/HistogramEtaPhi.cpp"]
 # Sets the test bench files
-set tb_files [list TB_Histogrammer.cpp]
+set tb_files [list "TB_Histogrammer.cpp"]
 # Sets the device we want to synthetise for
 set part {xcku115-flva1517-1-c}
 # Sets the clock frequency (if MHz is appended to the number), or period (if only the number is used)
