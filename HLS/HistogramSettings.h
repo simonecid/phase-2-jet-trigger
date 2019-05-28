@@ -1,16 +1,17 @@
 #ifndef __HISTOGRAMSETTINGS_H__
 #define __HISTOGRAMSETTINGS_H__
 
-#define PHI_GRID_SIZE 3
-// #define PHI_GRID_SIZE 8
-#define ETA_GRID_SIZE 3
-// #define ETA_GRID_SIZE 9
+// #define PHI_GRID_SIZE 5
+#define PHI_GRID_SIZE 10
+// #define ETA_GRID_SIZE 5
+#define ETA_GRID_SIZE 10
+
 
 #define LUT_FILL false
-#define PHI_BINS {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
-//#define PHI_BINS {0, 10, 20, 30}
-#define ETA_BINS {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
-//#define ETA_BINS {0, 10, 20, 30}
+// #define PHI_BINS {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+#define PHI_BINS {0, 10, 20, 30, 40, 50, 60, 70}
+// #define ETA_BINS {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+#define ETA_BINS {0, 10, 20, 30, 40, 50, 60, 70}
 
 #define DSP_FILL true
 #define XBINLOW 0

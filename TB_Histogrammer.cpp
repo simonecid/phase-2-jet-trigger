@@ -15,9 +15,15 @@ bool readInputsFromFile(const std::string &filepath, hls::Inputs inputs)
   {
     for (uint x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
     {
-      inFile >> inputs[x].pt;
-      inFile >> inputs[x].iEta;
-      inFile >> inputs[x].iPhi;
+      int pt;
+      inFile >> pt;
+      inputs[x].pt = pt;
+      int iEta;
+      inFile >> iEta;
+      inputs[x].iEta = iEta;
+      int iPhi;
+      inFile >> iPhi;
+      inputs[x].iPhi = iPhi;
     }
     inFile.close();
     return true;
@@ -134,22 +140,22 @@ int main(int argc, char const *argv[])
     }
   }
   
-  // std::cout << "Testing fill with random values" << std::endl;
+  std::cout << "Testing fill with random values" << std::endl;
 
-  // readInputsFromFile("/users/sb17498/HLS_Histogrammer/inputs.dat", lInputs);
-  // readBinsFromFile("/users/sb17498/HLS_Histogrammer/inputs_histogram.dat", referenceBins);
+  readInputsFromFile("/users/sb17498/HLS_Histogrammer/inputs.dat", lInputs);
+  readBinsFromFile("/users/sb17498/HLS_Histogrammer/inputs_histogram.dat", referenceBins);
 
-  // hls_histogrammer(lInputs, outputBins, true);
+  hls_histogrammer(lInputs, outputBins);
 
-  // for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
-  // {
-  //   for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
-  //   {
-  //     hls::TBin lBinRef = referenceBins[y][x];
-  //     hls::TBin lBin = outputBins[y][x];
-  //     assert(lBin == lBinRef);
-  //   }
-  // }
+  for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
+  {
+    for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
+    {
+      hls::TBin lBinRef = referenceBins[y][x];
+      hls::TBin lBin = outputBins[y][x];
+      assert(lBin == lBinRef);
+    }
+  }
 
   std::cout << "All tests have been passed!" << std::endl;
 

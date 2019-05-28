@@ -11,6 +11,7 @@ namespace hls
 {
   HistogramEtaPhi::HistogramEtaPhi()
   {
+    #pragma HLS inline
     #pragma HLS array_partition variable=_histogram complete dim=0
     #if LUT_FILL == true
     #pragma HLS array_partition variable=_xBins complete dim=0
@@ -25,7 +26,7 @@ namespace hls
 
   TBin HistogramEtaPhi::getBin(const unsigned char x, const unsigned char y) const 
   {
-    // #pragma HLS inline
+    #pragma HLS inline
     return this -> _histogram[y][x];
   };
 
@@ -96,11 +97,11 @@ namespace hls
 
   void HistogramEtaPhi::reset(TBin value) 
   {
-    // #pragma HLS inline
+    #pragma HLS inline
     #pragma HLS pipeline
-    resetHistogramLoops: for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
+    resetHistogramYLoop: for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
     {
-      for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
+      resetHistogramXLoop: for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
       {
         this -> _histogram[y][x] = value;
       }
@@ -121,22 +122,4 @@ namespace hls
     unsigned char yIdx = this -> findYBin(phiPosition);
     this -> addToBin(xIdx, yIdx, value);
   };
-
-  void HistogramEtaPhi::fill(const Inputs inputs)
-  {
-    #pragma HLS inline    
-    #pragma HLS pipeline 
-
-    unsigned char lXIndices[NUMBER_OF_INPUTS_PER_CLOCK];
-    unsigned char lYIndices[NUMBER_OF_INPUTS_PER_CLOCK];
-
-    fillHistogramLoop: for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
-    {
-      lXIndices[x] = this -> findXBin(inputs[x].iEta);
-      lYIndices[x] = this -> findYBin(inputs[x].iPhi);
-      this -> addToBin(lXIndices[x], lYIndices[x], inputs[x].pt);
-      // caloGrid.fill(lInputs[x].iEta, lInputs[x].iPhi, lInputs[x].pt);
-    }
-  };
-
 }

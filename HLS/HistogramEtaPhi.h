@@ -35,7 +35,6 @@ namespace hls
     unsigned char findYBin(TPhi yPosition) const;
     void addToBin(unsigned char xIdx, unsigned char yIdx, TBin value);
     void fill(TEta etaPosition, TPhi phiPosition, TBin value = 1);
-    void fill(const Inputs inputs);
     void reset(TBin value = 0);
   };
 }
