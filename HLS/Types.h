@@ -10,7 +10,7 @@ namespace hls
   typedef unsigned char TEta;
   typedef unsigned char TPhi;
   typedef TPt TBin;
-  typedef TBin TBins[PHI_GRID_SIZE][ETA_GRID_SIZE];
+  // typedef TBin TBins[PHI_GRID_SIZE][ETA_GRID_SIZE];
   typedef struct {
     TPt pt;
     TPhi iPhi;
