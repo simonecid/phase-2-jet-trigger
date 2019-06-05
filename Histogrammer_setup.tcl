@@ -11,8 +11,7 @@ set_part xcku115-flva1517-1-c
 create_clock -period 240MHz
 
 #adding hls files
-add_files "HLS_Histogrammer.cpp"
-#add_files "HLS/Histogram2D.cpp"
+add_files -cflags "-std=c++11" "HLS_Histogrammer.cpp"
 
 # adding testbench files
 add_files -tb "TB_Histogrammer.cpp"

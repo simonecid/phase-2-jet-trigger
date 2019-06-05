@@ -33,9 +33,7 @@ void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins)
   //   >
   myHist caloGrid;
   caloGrid.reset();
-  
   fillHistogramWithInputs(caloGrid, inputs);
-
   outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < ETA_GRID_SIZE; etaIndex++)
   {
     outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_GRID_SIZE; phiIndex++)

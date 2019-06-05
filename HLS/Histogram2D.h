@@ -4,6 +4,10 @@
 #include "ap_int.h"
 #include "Types.h"
 #include "HistogramSettings.h"
+#ifndef __SYNTHESIS__
+#include <csignal>
+#include <iostream>
+#endif
 
 namespace hls
 {
@@ -46,14 +50,6 @@ namespace hls
       TBins _histogram;
   };
 };
-
-#include <csignal>
-
-#include "Types.h"
-
-#ifndef __SYNTHESIS__
-#include <iostream>
-#endif
 
 namespace hls
 {

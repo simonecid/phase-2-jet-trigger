@@ -2,7 +2,7 @@
 #define __HISTOGRAMSETTINGS_H__
 
 // #define PHI_GRID_SIZE 5
-#define PHI_GRID_SIZE 13
+#define PHI_GRID_SIZE 10
 // #define ETA_GRID_SIZE 5
 #define ETA_GRID_SIZE PHI_GRID_SIZE
 
