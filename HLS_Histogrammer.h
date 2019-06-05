@@ -3,17 +3,18 @@
 
 #include "HLS/Types.h"
 #include "HLS/Histogram2D.h"
+#include "HLS/HistogramSettings.h"
 
 typedef   hls::Histogram2D<
     hls::TPt,
     hls::TEta,
     0,
     100,
-    10,
+    ETA_GRID_SIZE,
     hls::TPhi,
     0,
     100,
-    10
+    PHI_GRID_SIZE
     > myHist;
 
 void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins);
