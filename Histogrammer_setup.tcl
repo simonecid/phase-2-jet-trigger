@@ -12,7 +12,7 @@ create_clock -period 240MHz
 
 #adding hls files
 add_files "HLS_Histogrammer.cpp"
-add_files "HLS/HistogramEtaPhi.cpp"
+#add_files "HLS/Histogram2D.cpp"
 
 # adding testbench files
 add_files -tb "TB_Histogrammer.cpp"

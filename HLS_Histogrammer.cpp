@@ -1,5 +1,5 @@
 #include "HLS_Histogrammer.h"
-#include "HLS/HistogramEtaPhi.h"
+#include "HLS/Histogram2D.h"
 
 void copyInputs (const hls::Inputs srcInputs, hls::Inputs destInputs)
 {
@@ -13,14 +13,25 @@ void copyInputs (const hls::Inputs srcInputs, hls::Inputs destInputs)
   }
 }
 
-void hls_histogrammer(const hls::Inputs inputs, hls::TBins bins)
+void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins)
 {
   #pragma HLS array_partition variable=inputs dim=0
   #pragma HLS array_partition variable=bins dim=0
   #pragma HLS data_pack variable=inputs
   #pragma HLS pipeline
 
-  hls::HistogramEtaPhi caloGrid;
+  // hls::Histogram2D<
+  //   hls::TPt,
+  //   hls::TEta,
+  //   0,
+  //   100,
+  //   10,
+  //   hls::TPhi,
+  //   0,
+  //   100,
+  //   10
+  //   >
+  myHist caloGrid;
   caloGrid.reset();
   
   fillHistogramWithInputs(caloGrid, inputs);
@@ -36,7 +47,7 @@ void hls_histogrammer(const hls::Inputs inputs, hls::TBins bins)
   return;
 }
 
-void fillHistogramWithInputs(hls::HistogramEtaPhi & histogram, const hls::Inputs inputs)
+void fillHistogramWithInputs(myHist & histogram, const hls::Inputs inputs)
 {
   #pragma HLS inline    
   #pragma HLS pipeline 
