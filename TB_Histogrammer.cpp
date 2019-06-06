@@ -70,8 +70,8 @@ int main(int argc, char const *argv[])
 {
 
   hls::Inputs lInputs;
-  myHist::TBins outputBins;
-  myHist::TBins referenceBins;
+  PfInputHistogram::TBins outputBins;
+  PfInputHistogram::TBins referenceBins;
 
   std::cout << "Testing one bin fill" << std::endl;
   resetInputs(lInputs);

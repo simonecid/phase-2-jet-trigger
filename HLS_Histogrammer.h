@@ -5,20 +5,18 @@
 #include "HLS/Histogram2D.h"
 #include "HLS/HistogramSettings.h"
 
-typedef   hls::Histogram2D<
+typedef hls::Histogram2DFixedBinSize<
     hls::TPt,
     hls::TEta,
-    0,
-    100,
+    XBINSTEP,
     ETA_GRID_SIZE,
     hls::TPhi,
-    0,
-    100,
+    YBINSTEP,
     PHI_GRID_SIZE
-    > myHist;
+    > PfInputHistogram;
 
-void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins);
+void hls_histogrammer(const hls::Inputs inputs, PfInputHistogram::TBins bins);
 void copyInputs (const hls::Inputs srcInputs, hls::Inputs destInputs);
-void fillHistogramWithInputs(myHist & histogram, const hls::Inputs inputs);
+void fillHistogramWithInputs(PfInputHistogram & histogram, const hls::Inputs inputs);
 
 #endif //__HLS_HISTOGRAMMER_H__

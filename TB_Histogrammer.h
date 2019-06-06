@@ -8,5 +8,5 @@
 
 bool readInputsFromFile(const std::string &filepath, hls::Inputs inputs);
 void resetInputs(hls::Inputs inputs);
-bool readBinsFromFile(const std::string &filepath, myHist::TBins histogram);
+bool readBinsFromFile(const std::string &filepath, PfInputHistogram::TBins histogram);
 #endif //__TB_PHASE1CLUSTERING_H__

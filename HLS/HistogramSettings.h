@@ -22,10 +22,10 @@
 #define YBINSTEP 10
 
 #ifndef __SYNTHESIS__
-#define NUMBER_OF_INPUTS_PER_CLOCK 48
+#define NUMBER_OF_INPUTS_PER_CLOCK 24
 #endif
 #ifdef __SYNTHESIS__
-#define NUMBER_OF_INPUTS_PER_CLOCK 48
+#define NUMBER_OF_INPUTS_PER_CLOCK 24
 #endif
 
 #endif

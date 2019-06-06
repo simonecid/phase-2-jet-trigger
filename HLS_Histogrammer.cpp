@@ -13,25 +13,16 @@ void copyInputs (const hls::Inputs srcInputs, hls::Inputs destInputs)
   }
 }
 
-void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins)
+void hls_histogrammer(const hls::Inputs inputs, PfInputHistogram::TBins bins)
 {
   #pragma HLS array_partition variable=inputs dim=0
   #pragma HLS array_partition variable=bins dim=0
   #pragma HLS data_pack variable=inputs
   #pragma HLS pipeline
 
-  // hls::Histogram2D<
-  //   hls::TPt,
-  //   hls::TEta,
-  //   0,
-  //   100,
-  //   10,
-  //   hls::TPhi,
-  //   0,
-  //   100,
-  //   10
-  //   >
-  myHist caloGrid;
+  PfInputHistogram caloGrid;
+  caloGrid.setXLow(XBINLOW);
+  caloGrid.setYLow(YBINLOW);
   caloGrid.reset();
   fillHistogramWithInputs(caloGrid, inputs);
   outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < ETA_GRID_SIZE; etaIndex++)
@@ -45,7 +36,7 @@ void hls_histogrammer(const hls::Inputs inputs, myHist::TBins bins)
   return;
 }
 
-void fillHistogramWithInputs(myHist & histogram, const hls::Inputs inputs)
+void fillHistogramWithInputs(PfInputHistogram & histogram, const hls::Inputs inputs)
 {
   #pragma HLS inline    
   #pragma HLS pipeline 
