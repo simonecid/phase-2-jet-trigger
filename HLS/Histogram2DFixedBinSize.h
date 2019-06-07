@@ -19,10 +19,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, //size of bin 
+    unsigned char xStep, //size of bin 
     unsigned char nBinsX,
     class TYAxis, //y-axis element type
-    TYAxis yStep, //size of bin 
+    unsigned char yStep, //size of bin 
     unsigned char nBinsY
   >
   class Histogram2DFixedBinSize
@@ -60,10 +60,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   Histogram2DFixedBinSize
@@ -93,10 +93,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   TBin Histogram2DFixedBinSize
@@ -117,10 +117,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   void
@@ -143,10 +143,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   TBin
@@ -168,10 +168,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   TBin
@@ -193,10 +193,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   unsigned char
@@ -235,10 +235,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   unsigned char
@@ -277,10 +277,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   void
@@ -309,10 +309,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   void
@@ -334,10 +334,10 @@ namespace hls
   template <
     class TBin, //type of the bin
     class TXAxis, //x-axis element type
-    TXAxis xStep, 
+    unsigned char xStep, 
     unsigned char nBinsX, //number of bins in x
     class TYAxis, //y-axis element type
-    TYAxis yStep,
+    unsigned char yStep,
     unsigned char nBinsY //number of bins in y
   >
   void
