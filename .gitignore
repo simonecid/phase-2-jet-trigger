@@ -1,4 +1,5 @@
 *.log
 HLS_Histogrammer/
+HLS_HistogramBuffer/
 .vscode/
 *.dat
