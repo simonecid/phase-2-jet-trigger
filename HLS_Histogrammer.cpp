@@ -20,10 +20,6 @@ void hls_histogrammer(
   #pragma HLS array_partition variable=tk_hg_bins dim=0
   #pragma HLS array_partition variable=hg_bins dim=0
   #pragma HLS array_partition variable=hf_bins dim=0
-  #pragma HLS data_pack variable=barrel_inputs
-  #pragma HLS data_pack variable=tk_hg_inputs
-  #pragma HLS data_pack variable=hg_inputs
-  #pragma HLS data_pack variable=hf_inputs
   #pragma HLS pipeline
 
   hls::Barrel_PfInputHistogram barrel_Histogram;
@@ -45,7 +41,7 @@ void hls_histogrammer(
   hg_Histogram.reset();
   hf_Histogram.reset();
 
-  fillHistogramWithInputs(barrel_Histogram, barrel_inputs);
+  fillHistogramWithInputs<hls::Barrel_PfInputHistogram, hls::Barrel_Inputs>(barrel_Histogram, barrel_inputs);
   barrel_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < BARREL_ETA_N_BINS; etaIndex++)
   {
     barrel_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
@@ -54,32 +50,32 @@ void hls_histogrammer(
     }
   }
 
-  // fillHistogramWithInputs(tk_hg_Histogram, tk_hg_inputs);
-  // tk_hg_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < TK_HG_ETA_N_BINS; etaIndex++)
-  // {
-  //   tk_hg_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
-  //   {
-  //     tk_hg_bins[phiIndex][etaIndex] = tk_hg_Histogram.getBin(etaIndex, phiIndex);
-  //   }
-  // }
+  fillHistogramWithInputs<hls::TK_HG_PfInputHistogram, hls::TK_HG_Inputs>(tk_hg_Histogram, tk_hg_inputs);
+  tk_hg_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < TK_HG_ETA_N_BINS; etaIndex++)
+  {
+    tk_hg_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
+    {
+      tk_hg_bins[phiIndex][etaIndex] = tk_hg_Histogram.getBin(etaIndex, phiIndex);
+    }
+  }
 
-  // fillHistogramWithInputs(hg_Histogram, hg_inputs);
-  // hg_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < HG_ETA_N_BINS; etaIndex++)
-  // {
-  //   hg_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
-  //   {
-  //     hg_bins[phiIndex][etaIndex] = hg_Histogram.getBin(etaIndex, phiIndex);
-  //   }
-  // }
+  fillHistogramWithInputs<hls::HG_PfInputHistogram, hls::HG_Inputs>(hg_Histogram, hg_inputs);
+  hg_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < HG_ETA_N_BINS; etaIndex++)
+  {
+    hg_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
+    {
+      hg_bins[phiIndex][etaIndex] = hg_Histogram.getBin(etaIndex, phiIndex);
+    }
+  }
 
-  // fillHistogramWithInputs(hf_Histogram, hf_inputs);
-  // hf_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < HF_ETA_N_BINS; etaIndex++)
-  // {
-  //   hf_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
-  //   {
-  //     hf_bins[phiIndex][etaIndex] = hf_Histogram.getBin(etaIndex, phiIndex);
-  //   }
-  // }
+  fillHistogramWithInputs<hls::HF_PfInputHistogram, hls::HF_Inputs>(hf_Histogram, hf_inputs);
+  hf_outputBinsEtaLoop: for (unsigned char etaIndex = 0; etaIndex < HF_ETA_N_BINS; etaIndex++)
+  {
+    hf_outputBinsPhiLoop: for (unsigned char phiIndex = 0; phiIndex < PHI_N_BINS; phiIndex++)
+    {
+      hf_bins[phiIndex][etaIndex] = hf_Histogram.getBin(etaIndex, phiIndex);
+    }
+  }
 
   return;
 }

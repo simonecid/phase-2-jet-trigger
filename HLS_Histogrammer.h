@@ -30,18 +30,22 @@ void copyInputs (const Inputs srcInputs, Inputs destInputs)
 }
 
 template <class THistogram, class Inputs>
-void fillHistogramWithInputs(THistogram & histogram, Inputs inputs)
+void fillHistogramWithInputs(THistogram & histogram, const Inputs inputs)
 {
   #pragma HLS inline    
   #pragma HLS pipeline 
+
+  Inputs lInputs;
+
+  copyInputs<Inputs>(inputs, lInputs);
 
   unsigned char lXIndices[NUMBER_OF_INPUTS_PER_CLOCK];
   unsigned char lYIndices[NUMBER_OF_INPUTS_PER_CLOCK];
 
   indiciseInputsLoop: for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
   {
-    lXIndices[x] = histogram.findXBin(inputs[x].iEta);
-    lYIndices[x] = histogram.findYBin(inputs[x].iPhi);
+    lXIndices[x] = histogram.findXBin(lInputs[x].iEta);
+    lYIndices[x] = histogram.findYBin(lInputs[x].iPhi);
   }
 
   fillHistogramYLoop: for (unsigned char y = 0; y < histogram.getNBinsY(); y++)
@@ -53,7 +57,7 @@ void fillHistogramWithInputs(THistogram & histogram, Inputs inputs)
       fillHistogramInputsLoop: for (unsigned int inputIdx = 0; inputIdx < NUMBER_OF_INPUTS_PER_CLOCK; inputIdx++)
       {
         binContent += ((lXIndices[inputIdx] == x) && (lYIndices[inputIdx] == y)) ?
-        inputs[inputIdx].pt : nullPt;
+        lInputs[inputIdx].pt : nullPt;
       }
       histogram.setBin(x, y, binContent);
     }
