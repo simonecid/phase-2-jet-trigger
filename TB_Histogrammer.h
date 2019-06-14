@@ -1,5 +1,5 @@
-#ifndef __TB_PHASE1CLUSTERING_H__
-#define __TB_PHASE1CLUSTERING_H__
+#ifndef __TB_HISTOGRAMMER_H__
+#define __TB_HISTOGRAMMER_H__
 
 #include "HLS_Histogrammer.h"
 #include "HLS/Histogram2D.h"
