@@ -1,5 +1,5 @@
-#ifndef __HLS_HISTOGRAM_H__
-#define __HLS_HISTOGRAM_H__
+#ifndef __HLS_HISTOGRAM_2D_H__
+#define __HLS_HISTOGRAM_2D_H__
 
 #include "ap_int.h"
 #include "Types.h"
