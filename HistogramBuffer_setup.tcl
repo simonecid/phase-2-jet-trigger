@@ -3,7 +3,8 @@
 
 
 # creating project and solution
-open_project -reset HLS_HistogramBuffer
+# open_project -reset HLS_HistogramBuffer
+open_project HLS_HistogramBuffer
 open_solution -reset KU115
 
 #setting target device
@@ -14,7 +15,7 @@ create_clock -period 480MHz
 add_files -cflags "-std=c++11" "HLS_HistogramBuffer.cpp"
 
 # adding testbench files
-add_files -tb "TB_Histogrammer.cpp"
+add_files -tb "TB_HistogramBuffer.cpp"
 
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_histogram_buffer
