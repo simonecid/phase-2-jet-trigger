@@ -1,91 +1,99 @@
+#include "HLS/HistogramSettings.h"
+
 unsigned char returnBarrelEtaOffset(unsigned char regionId)
 {
   #pragma HLS inline off
-  switch (regionId)
-  {
-    case 0: return 42; break;
-    case 1: return 51; break;
-    case 2: return 60; break;
-    case 3: return 69; break;
-    case 4: return 42; break;
-    case 5: return 51; break;
-    case 6: return 60; break;
-    case 7: return 69; break;
-    case 8: return 42; break;
-    case 9: return 51; break;
-    case 10: return 60; break;
-    case 11: return 69; break;
-    case 12: return 42; break;
-    case 13: return 51; break;
-    case 14: return 60; break;
-    case 15: return 69; break;
-    case 16: return 42; break;
-    case 17: return 51; break;
-    case 18: return 60; break;
-    case 19: return 69; break;
-    case 20: return 42; break;
-    case 21: return 51; break;
-    case 22: return 60; break;
-    case 23: return 69; break;
-    case 24: return 42; break;
-    case 25: return 51; break;
-    case 26: return 60; break;
-    case 27: return 69; break;
-    case 28: return 42; break;
-    case 29: return 51; break;
-    case 30: return 60; break;
-    case 31: return 69; break;
-    case 32: return 42; break;
-    case 33: return 51; break;
-    case 34: return 60; break;
-    case 35: return 69; break;
-    // default: return 0; break;
-  }
+  return (regionId * N_ETA_BINS_BARREL_REGION) % N_ETA_SEGMENTS_BARREL;
+  // switch (regionId)
+  // {
+  //   case 0: return 0; break;
+  //   case 1: return 9; break;
+  //   case 2: return 18; break;
+  //   case 3: return 27; break;
+  //   case 0: return 42; break;
+  //   case 1: return 51; break;
+  //   case 2: return 60; break;
+  //   case 3: return 69; break;
+  //   case 4: return 42; break;
+  //   case 5: return 51; break;
+  //   case 6: return 60; break;
+  //   case 7: return 69; break;
+  //   case 8: return 42; break;
+  //   case 9: return 51; break;
+  //   case 10: return 60; break;
+  //   case 11: return 69; break;
+  //   case 12: return 42; break;
+  //   case 13: return 51; break;
+  //   case 14: return 60; break;
+  //   case 15: return 69; break;
+  //   case 16: return 42; break;
+  //   case 17: return 51; break;
+  //   case 18: return 60; break;
+  //   case 19: return 69; break;
+  //   case 20: return 42; break
+  //   case 21: return 51; break;
+  //   case 22: return 60; break;
+  //   case 23: return 69; break;
+  //   case 24: return 42; break;
+  //   case 25: return 51; break;
+  //   case 26: return 60; break;
+  //   case 27: return 69; break;
+  //   case 28: return 42; break;
+  //   case 29: return 51; break;
+  //   case 30: return 60; break;
+  //   case 31: return 69; break;
+  //   case 32: return 42; break;
+  //   case 33: return 51; break;
+  //   case 34: return 60; break;
+  //   case 35: return 69; break;
+  //   default: return 0; break;
+  // }
 }
 
 unsigned char returnBarrelPhiOffset(unsigned char regionId)
 {
   #pragma HLS inline off
-  switch (regionId)
-  {
-    case 0: return 0; break;
-    case 1: return 0; break;
-    case 2: return 0; break;
-    case 3: return 0; break;
-    case 4: return 8; break;
-    case 5: return 8; break;
-    case 6: return 8; break;
-    case 7: return 8; break;
-    case 8: return 16; break;
-    case 9: return 16; break;
-    case 10: return 16; break;
-    case 11: return 16; break;
-    case 12: return 24; break;
-    case 13: return 24; break;
-    case 14: return 24; break;
-    case 15: return 24; break;
-    case 16: return 32; break;
-    case 17: return 32; break;
-    case 18: return 32; break;
-    case 19: return 32; break;
-    case 20: return 40; break;
-    case 21: return 40; break;
-    case 22: return 40; break;
-    case 23: return 40; break;
-    case 24: return 48; break;
-    case 25: return 48; break;
-    case 26: return 48; break;
-    case 27: return 48; break;
-    case 28: return 56; break;
-    case 29: return 56; break;
-    case 30: return 56; break;
-    case 31: return 56; break;
-    case 32: return 64; break;
-    case 33: return 64; break;
-    case 34: return 64; break;
-    case 35: return 64; break;
-    // default: return 0; break;
-  }
+  return regionId / N_ETA_SEGMENTS_BARREL * 8;
+  // switch (regionId)
+  // {
+  //   case 0: return 0; break;
+  //   case 1: return 0; break;
+  //   case 2: return 0; break;
+  //   case 3: return 0; break;
+  //   case 4: return 8; break;
+  //   case 5: return 8; break;
+  //   case 6: return 8; break;
+  //   case 7: return 8; break;
+  //   case 8: return 16; break;
+  //   case 9: return 16; break;
+  //   case 10: return 16; break;
+  //   case 11: return 16; break;
+  //   case 12: return 24; break;
+  //   case 13: return 24; break;
+  //   case 14: return 24; break;
+  //   case 15: return 24; break;
+  //   case 16: return 32; break;
+  //   case 17: return 32; break;
+  //   case 18: return 32; break;
+  //   case 19: return 32; break;
+  //   case 20: return 40; break;
+  //   case 21: return 40; break;
+  //   case 22: return 40; break;
+  //   case 23: return 40; break;
+  //   case 24: return 48; break;
+  //   case 25: return 48; break;
+  //   case 26: return 48; break;
+  //   case 27: return 48; break;
+  //   case 28: return 56; break;
+  //   case 29: return 56; break;
+  //   case 30: return 56; break;
+  //   case 31: return 56; break;
+  //   case 32: return 64; break;
+  //   case 33: return 64; break;
+  //   case 34: return 64; break;
+  //   case 35: return 64; break;
+  //   default: return 0; break;
+  // }
 }
 
 unsigned char returnTKHGEtaOffset(unsigned char regionId)
