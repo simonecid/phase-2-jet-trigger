@@ -26,10 +26,10 @@ namespace hls
     TPt,
     TEta,
     ETA_BIN_SIZE, // size of a eta bin
-    BARREL_ETA_N_BINS, // number of bins in eta
+    N_ETA_BINS_BARREL_REGION, // number of bins in eta
     TPhi,
     PHI_BIN_SIZE, // size of a phi bin
-    PHI_N_BINS // number of bins in phi
+    N_BINS_PHI_REGION // number of bins in phi
     > Barrel_PfInputHistogram;
 
 
@@ -37,30 +37,30 @@ typedef Histogram2DFixedBinSize<
     TPt,
     TEta,
     ETA_BIN_SIZE, // size of a eta bin
-    TK_HG_ETA_N_BINS, // number of bins in eta
+    N_ETA_BINS_TK_HG_REGION, // number of bins in eta
     TPhi,
     PHI_BIN_SIZE, // size of a phi bin
-    PHI_N_BINS // number of bins in phi
+    N_BINS_PHI_REGION // number of bins in phi
     > TK_HG_PfInputHistogram;
 
 typedef Histogram2DFixedBinSize<
     TPt,
     TEta,
     ETA_BIN_SIZE, // size of a eta bin
-    HG_ETA_N_BINS, // number of bins in eta
+    N_ETA_BINS_HG_REGION, // number of bins in eta
     TPhi,
     PHI_BIN_SIZE, // size of a phi bin
-    PHI_N_BINS // number of bins in phi
+    N_BINS_PHI_REGION // number of bins in phi
     > HG_PfInputHistogram;
 
 typedef Histogram2DFixedBinSize<
     TPt,
     TEta,
     ETA_BIN_SIZE, // size of a eta bin
-    HF_ETA_N_BINS, // number of bins in eta
+    N_ETA_BINS_HF_REGION, // number of bins in eta
     TPhi,
     PHI_BIN_SIZE, // size of a phi bin
-    PHI_N_BINS // number of bins in phi
+    N_BINS_PHI_REGION // number of bins in phi
     > HF_PfInputHistogram;
 }
 #endif
