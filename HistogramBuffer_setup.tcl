@@ -3,8 +3,7 @@
 
 
 # creating project and solution
-# open_project -reset HLS_HistogramBuffer
-open_project HLS_HistogramBuffer
+open_project -reset HLS_HistogramBuffer
 open_solution -reset KU115
 
 #setting target device
