@@ -8,7 +8,7 @@ open_solution -reset KU115
 
 #setting target device
 set_part xcku115-flva1517-1-c
-create_clock -period 480MHz
+create_clock -period 240MHz
 
 #adding hls files
 add_files -cflags "-std=c++11" "HLS_HistogramBuffer.cpp"
