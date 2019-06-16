@@ -1,9 +1,14 @@
+#ifndef __REGION_OFFSET_H__
+#define __REGION_OFFSET_H__
+
 #include "HLS/HistogramSettings.h"
 
 unsigned char returnBarrelEtaOffset(unsigned char regionId)
 {
-  #pragma HLS inline off
-  return (regionId * N_ETA_BINS_BARREL_REGION) % N_ETA_SEGMENTS_BARREL;
+  #pragma HLS inline 
+  const unsigned char barrelEtaOffsets[4] = {0, 9, 18, 27};
+  return barrelEtaOffsets[regionId];
+
   // switch (regionId)
   // {
   //   case 0: return 0; break;
@@ -50,10 +55,12 @@ unsigned char returnBarrelEtaOffset(unsigned char regionId)
   // }
 }
 
-unsigned char returnBarrelPhiOffset(unsigned char regionId)
+unsigned char returnBarrelPhiOffset(unsigned char &regionId)
 {
-  #pragma HLS inline off
-  return regionId / N_ETA_SEGMENTS_BARREL * 8;
+  #pragma HLS inline
+  const unsigned char barrelPhiOffsets[4] = {0, 0, 0, 0};
+  return barrelPhiOffsets[regionId];
+
   // switch (regionId)
   // {
   //   case 0: return 0; break;
@@ -365,3 +372,17 @@ unsigned char returnHFPhiOffset(unsigned char regionId)
     // default: return 0; break;
   }
 }
+
+void returnNextRegionOffset(unsigned char &etaOffset, unsigned char &phiOffset, bool reset)
+{
+  // #pragma HLS inline off
+  // return (regionId * N_ETA_BINS_BARREL_REGION) % N_ETA_SEGMENTS_BARREL;
+  // if we have overflown with the eta pointer, then move phi up and restore eta to 0
+  phiOffset += (etaOffset == (N_ETA_SEGMENTS_BARREL - 1) * N_ETA_BINS_BARREL_REGION) ? phiOffset + N_BINS_PHI_REGION : phiOffset;
+  etaOffset = (etaOffset == (N_ETA_SEGMENTS_BARREL - 1) * N_ETA_BINS_BARREL_REGION) ? 0 : etaOffset + N_ETA_BINS_BARREL_REGION;
+  phiOffset = (reset) ? 0 : phiOffset;
+  etaOffset = (reset) ? 0 : etaOffset;
+  return;
+}
+
+#endif

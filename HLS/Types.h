@@ -8,8 +8,11 @@
 namespace hls
 {
   typedef ap_uint<10> TPt;
+  // typedef unsigned int TPt;
   typedef ap_uint<10> TEta;
+  // typedef unsigned int TEta;
   typedef ap_uint<10> TPhi;
+  // typedef unsigned int TPhi;
   typedef TPt TBin;
   // typedef TBin TBins[PHI_GRID_SIZE][ETA_GRID_SIZE];
   typedef struct {
