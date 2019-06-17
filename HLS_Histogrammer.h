@@ -7,17 +7,11 @@
 
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
-                      const hls::TK_HG_Inputs tk_hg_inputs, 
-                      const hls::HG_Inputs hg_inputs, 
-                      const hls::HF_Inputs hf_inputs, 
-                      hls::Barrel_PfInputHistogram::TBins barrel_bins,
-                      hls::TK_HG_PfInputHistogram::TBins tk_hg_bins,
-                      hls::HG_PfInputHistogram::TBins hg_bins,
-                      hls::HF_PfInputHistogram::TBins hf_bins
+                      hls::Barrel_PfInputHistogram::TBins barrel_bins
                      );
 
-template<class Inputs>
-void copyInputs (const Inputs srcInputs, Inputs destInputs)
+template<class TConstInputs, class TInputs>
+void copyInputs (TConstInputs srcInputs, TInputs destInputs)
 {
   #pragma HLS inline
   #pragma HLS pipeline
@@ -29,15 +23,15 @@ void copyInputs (const Inputs srcInputs, Inputs destInputs)
   }
 }
 
-template <class THistogram, class Inputs>
-void fillHistogramWithInputs(THistogram & histogram, const Inputs inputs)
+template <class THistogram, class TConstInputs, class TInputs>
+void fillHistogramWithInputs(THistogram & histogram, TConstInputs inputs)
 {
   #pragma HLS inline    
   #pragma HLS pipeline 
 
-  Inputs lInputs;
+  TInputs lInputs;
 
-  copyInputs<Inputs>(inputs, lInputs);
+  copyInputs<TConstInputs, TInputs>(inputs, lInputs);
 
   unsigned char lXIndices[NUMBER_OF_INPUTS_PER_CLOCK];
   unsigned char lYIndices[NUMBER_OF_INPUTS_PER_CLOCK];
