@@ -7,7 +7,7 @@ open_project -reset HLS_HistogramBuffer
 open_solution -reset KU115
 
 #setting target device
-set_part xcku115-flva1517-1-c
+set_part xcku115-flvd1517-2-i
 create_clock -period 240MHz
 
 #adding hls files
