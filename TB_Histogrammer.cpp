@@ -54,7 +54,8 @@
 // }
 
 
-void resetInputs(hls::Inputs inputs)
+template <class Inputs>
+void resetInputs(Inputs inputs)
 {
   for (uint x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++) 
   {
@@ -69,12 +70,12 @@ void resetInputs(hls::Inputs inputs)
 int main(int argc, char const *argv[])
 {
 
-  hls::Inputs lInputs;
-  PfInputHistogram::TBins outputBins;
-  PfInputHistogram::TBins referenceBins;
+  hls::Barrel_Inputs lInputs;
+  hls::Barrel_PfInputHistogram::TBins outputBins;
+  hls::Barrel_PfInputHistogram::TBins referenceBins;
 
   std::cout << "Testing one bin fill" << std::endl;
-  resetInputs(lInputs);
+  resetInputs<decltype(lInputs)>(lInputs);
 
   lInputs[0].pt = 100;
   lInputs[0].iEta = 10;
@@ -82,9 +83,9 @@ int main(int argc, char const *argv[])
 
   hls_histogrammer(lInputs, outputBins);
 
-  for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
+  for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
-    for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
+    for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
     {
       hls::TBin lBinRef = 0;
       if ((x == 1) && (y == 2)) lBinRef = 100;
@@ -94,7 +95,7 @@ int main(int argc, char const *argv[])
   }
 
   std::cout << "Testing adding to single bin" << std::endl;
-  resetInputs(lInputs);
+  resetInputs<decltype(lInputs)>(lInputs);
 
   lInputs[0].pt = 100;
   lInputs[0].iEta = 10;
@@ -105,9 +106,9 @@ int main(int argc, char const *argv[])
 
   hls_histogrammer(lInputs, outputBins);
 
-  for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
+  for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
-    for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
+    for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
     {
       hls::TBin lBinRef = 0;
       if ((x == 1) && (y == 2)) lBinRef = 200;
@@ -117,7 +118,7 @@ int main(int argc, char const *argv[])
   }
   
   std::cout << "Testing two bin fill" << std::endl;
-  resetInputs(lInputs);
+  resetInputs<decltype(lInputs)>(lInputs);
 
   lInputs[0].pt = 100;
   lInputs[0].iEta = 12;
@@ -128,9 +129,9 @@ int main(int argc, char const *argv[])
 
   hls_histogrammer(lInputs, outputBins);
 
-  for (unsigned char y = 0; y < PHI_GRID_SIZE; y++)
+  for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
-    for (unsigned char x = 0; x < ETA_GRID_SIZE; x++)
+    for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
     {
       hls::TBin lBinRef = 0;
       if ((x == 1) && (y == 2)) lBinRef = 100;

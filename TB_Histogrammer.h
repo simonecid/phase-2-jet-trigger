@@ -6,7 +6,7 @@
 #include "HLS/Types.h"
 #include "HLS/HistogramSettings.h"
 
-bool readInputsFromFile(const std::string &filepath, hls::Inputs inputs);
-void resetInputs(hls::Inputs inputs);
-bool readBinsFromFile(const std::string &filepath, PfInputHistogram::TBins histogram);
+bool readInputsFromFile(const std::string &filepath, hls::Barrel_Inputs inputs);
+void resetInputs(hls::Barrel_Inputs inputs);
+// bool readBinsFromFile(const std::string &filepath, PfInputHistogram::TBins histogram);
 #endif //__TB_PHASE1CLUSTERING_H__
