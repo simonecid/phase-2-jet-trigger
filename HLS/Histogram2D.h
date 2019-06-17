@@ -8,9 +8,4 @@
 #include "Histogram2DFixed.h"
 #include "Histogram2DFixedBinSize.h"
 
-#ifndef __SYNTHESIS__
-#include <csignal>
-#include <iostream>
-#endif
-
 #endif
