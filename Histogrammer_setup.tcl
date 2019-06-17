@@ -3,18 +3,18 @@
 
 
 # creating project and solution
-open_project HLS_Histogrammer
+open_project -reset HLS_Histogrammer
 open_solution -reset KU115
 
 #setting target device
-set_part xcku115-flva1517-1-c
+set_part xcku115-flvd1517-2-i
 create_clock -period 240MHz
 
 #adding hls files
 add_files -cflags "-std=c++11" "HLS_Histogrammer.cpp"
 
 # adding testbench files
-add_files -tb "TB_Histogrammer.cpp"
+add_files -cflags "-std=c++11" -tb "TB_Histogrammer.cpp"
 
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_histogrammer
