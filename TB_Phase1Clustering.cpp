@@ -260,7 +260,7 @@ void test5x5()
 
 //   // testing seed finding
 //   clearGrid(grid);
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == 0);
@@ -269,7 +269,7 @@ void test5x5()
 //   }
 
 //   grid[4][5] = 10;
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 
@@ -282,7 +282,7 @@ void test5x5()
 //   clearGrid(grid);
 //   grid[4][5] = 10;
 //   grid[3][5] = 10;
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == ( (x == 5) ? 20 : 0 ) );
@@ -293,7 +293,7 @@ void test5x5()
 //   clearGrid(grid);
 //   grid[4][5] = 10;
 //   grid[4][6] = 10;
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == ( (x == 6) ? 20 : 0 ) );
@@ -304,7 +304,7 @@ void test5x5()
 //   clearGrid(grid);
 //   grid[4][5] = 10;
 //   grid[4][4] = 10;
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == ( (x == 5) ? 20 : 0 ) );
@@ -313,7 +313,7 @@ void test5x5()
 //   }
 
 //   clearGrid(grid, SEED_THRESHOLD - 1);
-//   hls_main(grid, 10, jets);
+//   hls_jet_clustering(grid, 10, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == 0);
@@ -323,7 +323,7 @@ void test5x5()
 
 //   clearGrid(grid, 1);
 //   grid[4][5] = 5;
-//   hls_main(grid, etaShift, jets);
+//   hls_jet_clustering(grid, etaShift, jets);
 //   for (int x = 0 ; x < NUMBER_OF_SEEDS ; x++)
 //   {
 //     assert(jets[x].pt == ( (x == 5) ? 85 : 0 ) );
@@ -344,16 +344,16 @@ void runJetFinder(const CaloGrid caloGrid, TMJets tmJets)
       phiVector[iPhiIndex] = caloGrid[iEtaIndex][iPhiIndex];
     }
     // the first phi slice must reset the algo
-    if (iEtaIndex == 0) hls_main(phiVector, tmJets[0], true);
+    if (iEtaIndex == 0) hls_jet_clustering(phiVector, tmJets[0], true);
     // the first slices (2 if jets is 5 slice wide) do not produce any real jet
-    else if (iEtaIndex < ETA_JET_SIZE/2) hls_main(phiVector, tmJets[0], false);
+    else if (iEtaIndex < ETA_JET_SIZE/2) hls_jet_clustering(phiVector, tmJets[0], false);
     // sending slices while receiving jets from the previous ones
-    else hls_main(phiVector, tmJets[iEtaIndex - ETA_JET_SIZE/2], false);
+    else hls_jet_clustering(phiVector, tmJets[iEtaIndex - ETA_JET_SIZE/2], false);
   }
   //we need to process the remaining ETA_JET_SIZE/2 slices
   for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_JET_SIZE/2; iEtaIndex++) 
   {
-    hls_main(phiVector, tmJets[ETA_GRID_SIZE - ETA_JET_SIZE/2 + iEtaIndex], false);
+    hls_jet_clustering(phiVector, tmJets[ETA_GRID_SIZE - ETA_JET_SIZE/2 + iEtaIndex], false);
   }
   //done
 }

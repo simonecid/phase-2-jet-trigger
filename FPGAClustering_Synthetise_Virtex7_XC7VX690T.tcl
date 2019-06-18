@@ -26,7 +26,7 @@ set part {xc7vx690tffg1157-1}
 # 40MHz = 25 ns -> set clock 40MHz
 set clock 240MHz
 # Sets the top-level function name that is going to be starting point for synthetisation
-set top_function hls_main
+set top_function hls_jet_clustering
 
 # Collection of utility procedures
 source CommonProcedures.tcl

@@ -102,11 +102,11 @@ void hls_copyLine (const CaloGridPhiVector caloGridPhiSlice, CaloGridBuffer outC
   }
 }
 
-void hls_main(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset) 
+void hls_jet_clustering(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool reset) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
-  #if HLS_MAIN_FULLY_PIPELINED==true
+  #if HLS_JET_CLUSTERING_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
   //we use two buffers two be able to receive data for a new event while analysing the previous one
