@@ -57,7 +57,7 @@ switch $mode {
     initialise_project $project_name $hls_files $tb_files $top_function
     initialise_solution $project_name $solution_name $part $clock
     synthetise $project_name $solution_name
-    export_design -format ip_catalog -vendor "cern-cms" -version 0.1 -description jet_clustering 
+    export_design -format ip_catalog -vendor "cern-cms" -version 0.1.3 -description jet_clustering 
   }
   setup {
     setup_environment $project_name $solution_name

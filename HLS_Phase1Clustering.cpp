@@ -106,6 +106,7 @@ void hls_jet_clustering(CaloGridPhiVector inCaloGridPhiSlice, Jets outJets, bool
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
+  #pragma HLS data_pack variable=outJets 
   #if HLS_JET_CLUSTERING_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
