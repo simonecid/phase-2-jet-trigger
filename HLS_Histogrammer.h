@@ -7,7 +7,13 @@
 
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
-                      hls::Barrel_PfInputHistogram::TBins barrel_bins
+                      hls::Barrel_PfInputHistogram::TBins barrel_bins,
+                      const hls::TK_HG_Inputs tk_hg_inputs, 
+                      hls::TK_HG_PfInputHistogram::TBins tk_hg_bins,
+                      const hls::HG_Inputs hg_inputs, 
+                      hls::HG_PfInputHistogram::TBins hg_bins,
+                      const hls::HF_Inputs hf_inputs, 
+                      hls::HF_PfInputHistogram::TBins hf_bins
                      );
 
 template<class TConstInputs, class TInputs>
