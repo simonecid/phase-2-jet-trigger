@@ -99,7 +99,8 @@ void hls_histogram_buffer(
   // checking if all the regions have been received
   if (lNumberOfRegionsReceived < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
   {
-    unsigned char etaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
+    unsigned char etaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived) - 42;
+    // unsigned char etaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
     unsigned char phiOffset = returnBarrelPhiOffset(lNumberOfRegionsReceived);
     copy2DToWindow<decltype(lBarrelBins), N_ETA_BINS_BARREL_REGION, N_BINS_PHI_REGION, decltype(sBuffer)>(lBarrelBins, sBuffer, etaOffset, phiOffset);
   }

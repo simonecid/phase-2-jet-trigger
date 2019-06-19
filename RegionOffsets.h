@@ -22,7 +22,7 @@ unsigned char returnBarrelPhiOffset(unsigned char &regionId)
 unsigned char returnTKHGEtaOffset(unsigned char regionId)
 {
   #pragma HLS inline
-  const unsigned char tkhgEtaOffsets[18] = {36, 78 , 36 , 78 , 36 , 78 , 36 , 78 , 36 , 78 , 36 , 78 , 36 , 78 , 36 , 78 , 36 , 78};
+  const unsigned char tkhgEtaOffsets[18] = {36, 78, 36, 78, 36, 78, 36, 78, 36, 78, 36, 78, 36, 78, 36, 78, 36, 78};
   return tkhgEtaOffsets[regionId];
 }
 
