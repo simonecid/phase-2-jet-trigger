@@ -6,16 +6,16 @@
 unsigned char returnBarrelEtaOffset(unsigned char regionId)
 {
   #pragma HLS inline 
-  // const unsigned char barrelEtaOffsets[4] = {0, 9, 18, 27};
-  const unsigned char barrelEtaOffsets[36] = {42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69};
+  const unsigned char barrelEtaOffsets[4] = {0, 9, 18, 27};
+  // const unsigned char barrelEtaOffsets[36] = {42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69, 42, 51, 60, 69};
   return barrelEtaOffsets[regionId];
 }
 
 unsigned char returnBarrelPhiOffset(unsigned char &regionId)
 {
   #pragma HLS inline
-  // const unsigned char barrelPhiOffsets[4] = {0, 0, 0, 0};
-  const unsigned char barrelPhiOffsets[36] = {0, 0, 0, 0, 8, 8, 8, 8, 16, 16, 16, 16, 24, 24, 24, 24, 32, 32, 32, 32, 40, 40, 40, 40, 48, 48, 48, 48, 56, 56, 56, 56, 64, 64, 64, 64};
+  const unsigned char barrelPhiOffsets[4] = {0, 0, 0, 0};
+  // const unsigned char barrelPhiOffsets[36] = {0, 0, 0, 0, 8, 8, 8, 8, 16, 16, 16, 16, 24, 24, 24, 24, 32, 32, 32, 32, 40, 40, 40, 40, 48, 48, 48, 48, 56, 56, 56, 56, 64, 64, 64, 64};
   return barrelPhiOffsets[regionId];
 }
 
