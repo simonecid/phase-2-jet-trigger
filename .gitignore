@@ -3,6 +3,7 @@
 .vscode
 .autopilot
 FPGAClustering/
+JetClustering/
 reports/
 *.pdf
 *.csv
