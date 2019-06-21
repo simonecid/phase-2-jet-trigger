@@ -8,7 +8,7 @@
 pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi)
 {
   // #if INLINE_EVERYTHING==true
-  // #pragma HLS inline
+  #pragma HLS inline
   // #endif
   // // We return the pt of a certain bin in the calo grid, taking account of the phi periodicity when overflowing (e.g. phi > phiSize), and returning 0 for the eta out of bounds
 
@@ -66,7 +66,7 @@ void hls_shiftGridLeft (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloG
   #pragma HLS pipeline
   copyPhiGrid: for(unsigned char iPhi = 1 ; iPhi < PHI_JET_SIZE ; iPhi++)
   {
-    copyEtaGrid: for (unsigned char iEta = 0 ; iEta < PHI_GRID_SIZE ; iEta++)
+    copyEtaGrid: for (unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++)
     {
       outCaloGrid[iPhi - 1][iEta] = inCaloGrid[iPhi][iEta];
     }
@@ -87,6 +87,16 @@ void hls_copyLine (const CaloGridPhiSlice caloGridPhiSlice, CaloGridBuffer outCa
   }
 }
 
+void hls_copyLine (const CaloGridPhiSlice inCaloGridPhiSlice, CaloGridPhiSlice outCaloGridPhiSlice)
+{
+  #pragma HLS inline
+  #pragma HLS pipeline
+  copyPhiGrid: for (unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++)
+  {
+    outCaloGridPhiSlice[iEta] = inCaloGridPhiSlice[iEta];
+  }
+}
+
 void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
@@ -95,11 +105,12 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
   #if HLS_JET_CLUSTERING_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
-  //we use two buffers two be able to receive data for a new event while analysing the previous one
+  
   static unsigned char sPhiIndex = 0;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
-  
+  static CaloGridPhiSlice sFirstPhiSlices[PHI_JET_SIZE - 1];
+  #pragma HLS array_partition variable=sFirstPhiSlices complete dim=0
   if (reset)
   {
     sPhiIndex = 0;
@@ -110,7 +121,15 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
   #pragma HLS array_partition variable=lCaloGridTmp complete dim=0 
   unsigned char lPhiIndex = sPhiIndex;
   sPhiIndex++;
+  //storing the first phi slices to analyse them later when I got the last ones
+  if (lPhiIndex < PHI_JET_SIZE - 1) hls_copyLine(inCaloGridPhiSlice, sFirstPhiSlices[lPhiIndex]);
+  //storing in  the buffer
   if (lPhiIndex < PHI_GRID_SIZE) hls_copyLine(inCaloGridPhiSlice, sCaloGrid, PHI_JET_SIZE - 1);
+  //if we have received all the phi slices then it is time to analyse the one I previously stored
+  else if (lPhiIndex < PHI_GRID_SIZE + PHI_JET_SIZE - 1) {
+    lPhiIndex = lPhiIndex - PHI_GRID_SIZE;
+    hls_copyLine(sFirstPhiSlices[lPhiIndex], sCaloGrid, PHI_JET_SIZE - 1);
+  }
   hls_copyGrid(sCaloGrid, lCaloGridTmp);
   hls_shiftGridLeft(sCaloGrid, sCaloGrid);
   Jets lJets; 
