@@ -5,28 +5,28 @@
 #include <assert.h>
 #include <fstream>
 
-void printCaloGrid(const CaloGrid caloGrid)
-{
-  std::cout << "Printing grid" << std::endl;
-  for (unsigned char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
-  {
-    for (unsigned char iEta = 0; iEta < ETA_GRID_SIZE; iEta++)
-    {
-      std::cout << caloGrid[iEta][iPhi] << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}
+// void printCaloGrid(const CaloGrid caloGrid)
+// {
+//   std::cout << "Printing grid" << std::endl;
+//   for (unsigned char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
+//   {
+//     for (unsigned char iEta = 0; iEta < ETA_GRID_SIZE; iEta++)
+//     {
+//       std::cout << caloGrid[iPhi][iEta] << " ";
+//     }
+//     std::cout << std::endl;
+//   }
+//   std::cout << std::endl;
+// }
 
 bool readCaloGridFromFile(const std::string &filepath, CaloGrid caloGrid)
 {
   std::ifstream inFile(filepath);
   if (inFile.is_open())
   {
-    for (uint x = 0; x < PHI_GRID_SIZE; x++)
+    for(uint y = 0; y < PHI_GRID_SIZE; y++)
     {
-      for(uint y = 0; y < ETA_GRID_SIZE; y++)
+      for (uint x = 0; x < ETA_GRID_SIZE; x++)
       {
         inFile >> caloGrid[y][x];
       }
@@ -60,7 +60,7 @@ void clearGrid(CaloGrid grid, pt_type value)
   {
     for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
     {
-      grid[iEtaIndex][iPhiIndex] = value;
+      grid[iPhiIndex][iEtaIndex] = value;
     }
   }
   return;
@@ -104,21 +104,28 @@ void test5x5()
   clearJets(jets);
   clearGrid(grid);
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
+      if (jets[tmIndex][jetIndex].pt > 0)
+      {
+        std::cout << "(" << tmIndex << ", " << jetIndex << ")" << ":";
+        std::cout << "\tpt: "<< +jets[tmIndex][jetIndex].pt;
+        std::cout << "\tiEta: " << +jets[tmIndex][jetIndex].iEta;
+        std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
+      }
       assert(jets[tmIndex][jetIndex].pt == 0);
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
 
   std::cout << "TEST 2" << std::endl;
   clearJets(jets);
-  grid[20][10] = 10;
+  grid[10][20] = 10;
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -130,8 +137,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 20) && (jetIndex == 10)) ? 10 : 0 ) );
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
 
@@ -141,7 +148,7 @@ void test5x5()
   grid[4][5] = 10;
   grid[3][5] = 10;
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -164,7 +171,7 @@ void test5x5()
   grid[4][5] = 10;
   grid[4][6] = 10;
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -187,7 +194,7 @@ void test5x5()
   grid[4][5] = 10;
   grid[4][4] = 10;
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -208,7 +215,7 @@ void test5x5()
   clearGrid(grid, SEED_THRESHOLD - 1);
   clearJets(jets);
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -230,7 +237,7 @@ void test5x5()
   clearJets(jets);
   grid[4][5] = SEED_THRESHOLD;
   runJetFinder(grid, jets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
     {
@@ -336,24 +343,24 @@ void test5x5()
 void runJetFinder(const CaloGrid caloGrid, TMJets tmJets)
 {
   //sending the phi slices
-  CaloGridPhiVector phiVector;
-  for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
+  CaloGridPhiSlice phiSlice;
+  for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
   {
-    for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
+    for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
     {
-      phiVector[iPhiIndex] = caloGrid[iEtaIndex][iPhiIndex];
+      phiSlice[iEtaIndex] = caloGrid[iPhiIndex][iEtaIndex];
     }
     // the first phi slice must reset the algo
-    if (iEtaIndex == 0) hls_jet_clustering(phiVector, tmJets[0], true);
+    if (iPhiIndex == 0) hls_jet_clustering(phiSlice, tmJets[0], true);
     // the first slices (2 if jets is 5 slice wide) do not produce any real jet
-    else if (iEtaIndex < ETA_JET_SIZE/2) hls_jet_clustering(phiVector, tmJets[0], false);
+    else if (iPhiIndex < PHI_JET_SIZE/2) hls_jet_clustering(phiSlice, tmJets[0], false);
     // sending slices while receiving jets from the previous ones
-    else hls_jet_clustering(phiVector, tmJets[iEtaIndex - ETA_JET_SIZE/2], false);
+    else hls_jet_clustering(phiSlice, tmJets[iPhiIndex - PHI_JET_SIZE/2], false);
   }
-  //we need to process the remaining ETA_JET_SIZE/2 slices
-  for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_JET_SIZE/2; iEtaIndex++) 
+  //we need to process the remaining PHI_JET_SIZE/2 slices
+  for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_JET_SIZE/2; iPhiIndex++) 
   {
-    hls_jet_clustering(phiVector, tmJets[ETA_GRID_SIZE - ETA_JET_SIZE/2 + iEtaIndex], false);
+    hls_jet_clustering(phiSlice, tmJets[PHI_GRID_SIZE - PHI_JET_SIZE/2 + iPhiIndex], false);
   }
   //done
 }
