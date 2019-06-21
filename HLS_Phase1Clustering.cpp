@@ -118,7 +118,6 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
   
   copyBackJets:for (unsigned char jetIdx = 0 ; jetIdx < NUMBER_OF_SEEDS; jetIdx++) 
   {
-    if (lJets[jetIdx].pt > 0) std::raise(SIGINT);
     outJets[jetIdx].pt = lJets[jetIdx].pt;
     outJets[jetIdx].iPhi = lPhiIndex - lJets[jetIdx].iPhi;
     outJets[jetIdx].iEta = lJets[jetIdx].iEta;
@@ -135,7 +134,7 @@ void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets)
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
   #endif
-  jetFinderEtaLoop: for (unsigned char iEta = 0 ; iEta < PHI_GRID_SIZE ; iEta++) 
+  jetFinderEtaLoop: for (unsigned char iEta = 0 ; iEta < ETA_GRID_SIZE ; iEta++) 
   {
     CaloGridBuffer lTmpCaloGrid;
     hls_copyGrid( inCaloGrid, lTmpCaloGrid );

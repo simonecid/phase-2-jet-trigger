@@ -5,19 +5,19 @@
 #include <assert.h>
 #include <fstream>
 
-// void printCaloGrid(const CaloGrid caloGrid)
-// {
-//   std::cout << "Printing grid" << std::endl;
-//   for (unsigned char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
-//   {
-//     for (unsigned char iEta = 0; iEta < ETA_GRID_SIZE; iEta++)
-//     {
-//       std::cout << caloGrid[iPhi][iEta] << " ";
-//     }
-//     std::cout << std::endl;
-//   }
-//   std::cout << std::endl;
-// }
+void printCaloGrid(const CaloGrid caloGrid)
+{
+  std::cout << "Printing grid" << std::endl;
+  for (unsigned char iPhi = 0; iPhi < PHI_GRID_SIZE; iPhi++)
+  {
+    for (unsigned char iEta = 0; iEta < ETA_GRID_SIZE; iEta++)
+    {
+      std::cout << caloGrid[iPhi][iEta] << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+}
 
 bool readCaloGridFromFile(const std::string &filepath, CaloGrid caloGrid)
 {
@@ -69,27 +69,20 @@ void clearGrid(CaloGrid grid, pt_type value)
 int main(int argc, char const *argv[])
 {
   test5x5();
-  CaloGrid caloGrid;
-  TMJets tmJets;
-  readCaloGridFromFile("/users/sb17498/FPGAClustering/event.txt", caloGrid);
-  runJetFinder(caloGrid, tmJets);
-  for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
-  {
-    for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
-    {
-      const Jet & lJet = tmJets[tmIndex][jetIndex];
+  // CaloGrid caloGrid;
+  // TMJets tmJets;
+  // readCaloGridFromFile("/users/sb17498/FPGAClustering/event.txt", caloGrid);
+  // runJetFinder(caloGrid, tmJets);
+  // for (unsigned int tmIndex = 0; tmIndex < ETA_GRID_SIZE; tmIndex++)
+  // {
+  //   for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
+  //   {
+  //     const Jet & lJet = tmJets[tmIndex][jetIndex];
       
-      assert(lJet.iEta == tmIndex);
-      assert(lJet.iPhi == jetIndex);
-      // if (lJet.pt > 0)
-      // {
-      //   std::cout << "----- Found a jet -----" << std::endl;
-      //   std::cout << "pt: " << +lJet.pt << std::endl;
-      //   std::cout << "iEta: " << +lJet.iEta << std::endl;
-      //   std::cout << "iPhi: " << +lJet.iPhi << std::endl;
-      // }
-    }
-  }
+  //     assert(lJet.iEta == tmIndex);
+  //     assert(lJet.iPhi == jetIndex);
+  //   }
+  // }
   return 0;
 }
 
@@ -136,7 +129,7 @@ void test5x5()
         std::cout << "\tiEta: " << +jets[tmIndex][jetIndex].iEta;
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
-      assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 20) && (jetIndex == 10)) ? 10 : 0 ) );
+      assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 10) && (jetIndex == 20)) ? 10 : 0 ) );
       assert(jets[tmIndex][jetIndex].iEta == jetIndex);
       assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
@@ -160,8 +153,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 4) && (jetIndex == 5)) ? 20 : 0 ) );
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
 
@@ -183,8 +176,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 4) && (jetIndex == 6)) ? 20 : 0 ) );
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
   
@@ -206,8 +199,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 4) && (jetIndex == 5)) ? 20 : 0 ) );
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
 
@@ -227,8 +220,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == 0);
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
 
@@ -249,8 +242,8 @@ void test5x5()
         std::cout << "\tiPhi: " << +jets[tmIndex][jetIndex].iPhi << std::endl;
       }
       assert(jets[tmIndex][jetIndex].pt == ( ((tmIndex == 4) && (jetIndex == 5)) ? 101 : 0 ) );
-      assert(jets[tmIndex][jetIndex].iEta == tmIndex);
-      assert(jets[tmIndex][jetIndex].iPhi == jetIndex);
+      assert(jets[tmIndex][jetIndex].iEta == jetIndex);
+      assert(jets[tmIndex][jetIndex].iPhi == tmIndex);
     }
   }
   
