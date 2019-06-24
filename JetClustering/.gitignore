@@ -1,0 +1,15 @@
+*.log
+*.exe
+.vscode
+.autopilot
+FPGAClustering/
+JetClustering/
+reports/
+*.pdf
+*.csv
+*.pkl
+*.png
+*.pyc
+*.rpt
+*.out
+*.xml
