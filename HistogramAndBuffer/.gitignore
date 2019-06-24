@@ -1,0 +1,8 @@
+*.log
+HLS_Histogrammer/
+HLS_HistogramBuffer/
+.vscode/
+*.dat
+*.rpt
+*.xml
+*.pdf
