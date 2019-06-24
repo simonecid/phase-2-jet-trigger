@@ -54,7 +54,8 @@ const hls::TPt nullPt = 0;
 void hls_histogram_buffer(
                       const hls::Barrel_PfInputHistogram::TBins inBarrelBins,
                       hls::TPt outBins[N_BINS_ETA],
-                      bool reset
+                      bool inReset,
+                      bool & outReset
                      )
 {
   #pragma HLS array_partition variable=inBarrelBins dim=0
@@ -62,7 +63,7 @@ void hls_histogram_buffer(
   
   #pragma HLS pipeline 
 
-  bool lReset = reset;
+  bool lReset = inReset;
 
   hls::Barrel_PfInputHistogram::TBins lBarrelBins;
   #pragma HLS array_partition variable=lBarrelBins dim=0 complete
@@ -99,5 +100,7 @@ void hls_histogram_buffer(
   unsigned char lNextOutputLine = (lNumberOfRegionsReceived < N_ETA_SEGMENTS - 1) ? 0 : sOutputLine + 1;
   // updating the line register if we haven't reached the end of memory yet
   sOutputLine = (sOutputLine == N_BINS_PHI_REGION * N_PHI_SEGMENTS - 1) ? sOutputLine : lNextOutputLine;
+
+  outReset = lReset;
 
 }

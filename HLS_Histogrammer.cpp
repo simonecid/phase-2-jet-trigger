@@ -26,7 +26,9 @@ void histogramInputs(TConstInputs inputs, TBins bins)
 
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
-                      hls::Barrel_PfInputHistogram::TBins barrel_bins
+                      hls::Barrel_PfInputHistogram::TBins barrel_bins,
+                      bool inReset,
+                      bool & outReset
                      )
 {
   #pragma HLS data_pack variable=barrel_inputs
@@ -36,6 +38,8 @@ void hls_histogrammer(
 
   histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
     (barrel_inputs, barrel_bins);
+
+  outReset = inReset;
 
   return;
 }
