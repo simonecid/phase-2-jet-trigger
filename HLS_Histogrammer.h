@@ -13,7 +13,9 @@ void hls_histogrammer(
                       const hls::HG_Inputs hg_inputs, 
                       hls::HG_PfInputHistogram::TBins hg_bins,
                       const hls::HF_Inputs hf_inputs, 
-                      hls::HF_PfInputHistogram::TBins hf_bins
+                      hls::HF_PfInputHistogram::TBins hf_bins,
+                      bool inReset,
+                      bool & outReset
                      );
 
 template<class TConstInputs, class TInputs>

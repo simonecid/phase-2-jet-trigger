@@ -32,7 +32,9 @@ void hls_histogrammer(
                       const hls::HG_Inputs hg_inputs, 
                       hls::HG_PfInputHistogram::TBins hg_bins,
                       const hls::HF_Inputs hf_inputs, 
-                      hls::HF_PfInputHistogram::TBins hf_bins
+                      hls::HF_PfInputHistogram::TBins hf_bins,
+                      bool inReset,
+                      bool & outReset
                      )
 {
   #pragma HLS data_pack variable=barrel_inputs
@@ -57,6 +59,8 @@ void hls_histogrammer(
     (hg_inputs, hg_bins);
   histogramInputs<hls::HF_PfInputHistogram, hls::HF_PfInputHistogram::TBins, const hls::HF_Inputs, hls::HF_Inputs>
     (hf_inputs, hf_bins);
+
+  outReset = inReset;
 
   return;
 }
