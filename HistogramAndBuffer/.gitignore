@@ -6,3 +6,6 @@ HLS_HistogramBuffer/
 *.rpt
 *.xml
 *.pdf
+*.pyc
+*.out
+*.csv

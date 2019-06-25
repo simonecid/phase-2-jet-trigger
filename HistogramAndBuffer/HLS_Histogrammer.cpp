@@ -1,16 +1,17 @@
 #include "HLS_Histogrammer.h"
 #include "HLS/Histogram2D.h"
+#include "RegionOffsets.h"
 
 template <class THistogram, class TBins, class TConstInputs, class TInputs>
-void histogramInputs(TConstInputs inputs, TBins bins)
+void histogramInputs(TConstInputs inputs, TBins bins, unsigned char etaOffset, unsigned char phiOffset)
 {
   #pragma HLS inline
   #pragma HLS pipeline
 
   THistogram lHistogram;
 
-  lHistogram.setXLow(0);
-  lHistogram.setYLow(0);
+  lHistogram.setXLow(etaOffset);
+  lHistogram.setYLow(phiOffset);
   lHistogram.reset();
 
   fillHistogramWithInputs<THistogram, TConstInputs, TInputs>
@@ -26,7 +27,9 @@ void histogramInputs(TConstInputs inputs, TBins bins)
 
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
-                      hls::Barrel_PfInputHistogram::TBins barrel_bins
+                      hls::Barrel_PfInputHistogram::TBins barrel_bins,
+                      bool inReset,
+                      bool & outReset
                      )
 {
   #pragma HLS data_pack variable=barrel_inputs
@@ -34,8 +37,20 @@ void hls_histogrammer(
   #pragma HLS array_partition variable=barrel_bins dim=0
   #pragma HLS pipeline
 
-  histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
-    (barrel_inputs, barrel_bins);
+  static unsigned char sNumberOfRegionsReceived = 0;
+  unsigned char lNumberOfRegionsReceived = (lReset) ? 0 : sNumberOfRegionsReceived;
+  sNumberOfRegionsReceived = (lReset) ? 1 : sNumberOfRegionsReceived + 1;
+
+  // checking if all the regions have been received
+  if (lNumberOfRegionsReceived < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
+  {
+    unsigned char lEtaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
+    unsigned char lPhiOffset = returnBarrelPhiOffset(lNumberOfRegionsReceived);
+    histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
+      (barrel_inputs, barrel_bins, etaOffset, phiOffset);
+  }
+
+  outReset = inReset;
 
   return;
 }

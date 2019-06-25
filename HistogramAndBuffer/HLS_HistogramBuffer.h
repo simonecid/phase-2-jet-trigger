@@ -14,7 +14,8 @@ typedef hls::Window<N_BINS_PHI, N_BINS_ETA, hls::TPt> TBuffer;
 void hls_histogram_buffer(
                       const hls::Barrel_PfInputHistogram::TBins inBarrelBins,
                       hls::TPt outBins[N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL],
-                      bool reset
+                      bool inReset,
+                      bool & outReset
                      );
 
 #endif //__HLS_HISTOGRAMMER_H__
