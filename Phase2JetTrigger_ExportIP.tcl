@@ -1,5 +1,5 @@
 set part xcku115-flvd1517-2-i
-set clock 240MHz
+set clock 300MHz
 
 ## STEP 1: Building and exporting to IP format the jet clustering
 
@@ -56,4 +56,4 @@ set_top hls_histogram_buffer
 #synthetising
 csynth_design
 #exporting IP
-export_design -format ip_catalog -vendor "cern-cms" -version barrel-only.0.1 -description histogram_buffer
+export_design -format ip_catalog -vendor "cern-cms" -version 0.1 -description histogram_buffer
