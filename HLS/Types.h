@@ -1,7 +1,7 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
-#include "ap_int.h"
+#include <ap_int.h>
 #include "HistogramSettings.h"
 #include "Histogram2D.h"
 
