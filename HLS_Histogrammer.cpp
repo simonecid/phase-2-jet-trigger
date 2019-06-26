@@ -38,8 +38,8 @@ void hls_histogrammer(
   #pragma HLS pipeline
 
   static unsigned char sNumberOfRegionsReceived = 0;
-  unsigned char lNumberOfRegionsReceived = (lReset) ? 0 : sNumberOfRegionsReceived;
-  sNumberOfRegionsReceived = (lReset) ? 1 : sNumberOfRegionsReceived + 1;
+  unsigned char lNumberOfRegionsReceived = (inReset) ? 0 : sNumberOfRegionsReceived;
+  sNumberOfRegionsReceived = (inReset) ? 1 : sNumberOfRegionsReceived + 1;
 
   // checking if all the regions have been received
   if (lNumberOfRegionsReceived < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
