@@ -32,7 +32,7 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #error "ETA_GRID_SIZE is >= 128, this is not going to work"
 #endif
 
-#include "ap_int.h"
+#include <ap_int.h>
 
 typedef ap_uint<10> pt_type;
 typedef unsigned char eta_type;
