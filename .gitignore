@@ -25,3 +25,5 @@ reports/
 **/impl
 **/.autopilot
 **/csim
+*.tar.gz
+*.zip
