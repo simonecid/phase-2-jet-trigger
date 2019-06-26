@@ -47,7 +47,7 @@ void hls_histogrammer(
     unsigned char lEtaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
     unsigned char lPhiOffset = returnBarrelPhiOffset(lNumberOfRegionsReceived);
     histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
-      (barrel_inputs, barrel_bins, etaOffset, phiOffset);
+      (barrel_inputs, barrel_bins, lEtaOffset, lPhiOffset);
   }
 
   outReset = inReset;
