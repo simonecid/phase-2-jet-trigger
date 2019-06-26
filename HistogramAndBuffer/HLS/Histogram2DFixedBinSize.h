@@ -1,7 +1,7 @@
 #ifndef __HLS_HISTOGRAM_2D_FIXED_BIN_SIZE_H__
 #define __HLS_HISTOGRAM_2D_FIXED_BIN_SIZE_H__
 
-#include "ap_int.h"
+#include <ap_int.h>
 #include "Types.h"
 #include "HistogramSettings.h"
 #ifndef __SYNTHESIS__
