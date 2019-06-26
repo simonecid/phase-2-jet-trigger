@@ -8,8 +8,8 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 */
 
 // size of the buffer holding the calogrid
-#define PHI_GRID_SIZE 72
-#define ETA_GRID_SIZE 96
+#define PHI_GRID_SIZE 9
+#define ETA_GRID_SIZE 18
 #define ETA_JET_SIZE 5
 
 #define PHI_JET_SIZE ETA_JET_SIZE
