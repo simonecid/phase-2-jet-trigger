@@ -44,8 +44,8 @@ void hls_histogrammer(
   // checking if all the regions have been received
   if (lNumberOfRegionsReceived < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
   {
-    unsigned char lEtaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
-    unsigned char lPhiOffset = returnBarrelPhiOffset(lNumberOfRegionsReceived);
+    unsigned char lEtaOffset = 0;
+    unsigned char lPhiOffset = 0;
     histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
       (barrel_inputs, barrel_bins, lEtaOffset, lPhiOffset);
   }
