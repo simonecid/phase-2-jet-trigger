@@ -40,8 +40,9 @@ void fillHistogramWithInputs(THistogram & histogram, TConstInputs inputs)
 
   indiciseInputsLoop: for (unsigned int x = 0; x < NUMBER_OF_INPUTS_PER_CLOCK; x++)
   {
-    lXIndices[x] = histogram.findXBin(lInputs[x].iEta);
-    lYIndices[x] = histogram.findYBin(lInputs[x].iPhi);
+    // if the momentum of the input is null, then no need to find the bin
+    lXIndices[x] = (lInputs[x].pt == 0) ? 0 : histogram.findXBin(lInputs[x].iEta);
+    lYIndices[x] = (lInputs[x].pt == 0) ? 0 : histogram.findYBin(lInputs[x].iPhi);
   }
 
   fillHistogramYLoop: for (unsigned char y = 0; y < histogram.getNBinsY(); y++)
