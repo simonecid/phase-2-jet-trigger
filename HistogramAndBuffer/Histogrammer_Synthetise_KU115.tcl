@@ -1,0 +1,2 @@
+source Histogrammer_setup.tcl
+csynth_design
