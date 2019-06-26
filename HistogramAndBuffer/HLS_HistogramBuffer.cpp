@@ -101,6 +101,7 @@ void hls_histogram_buffer(
   // updating the line register if we haven't reached the end of memory yet
   sOutputLine = (sOutputLine == N_BINS_PHI_REGION * N_PHI_SEGMENTS - 1) ? sOutputLine : lNextOutputLine;
 
-  outReset = lReset;
+  // if we have received a line of regions then we can emit the reset for the jet finder as we have started sending a new event
+  outReset = (lNumberOfRegionsReceived == N_ETA_SEGMENTS - 1);
 
 }
