@@ -18,4 +18,13 @@ Once it is done, you can get the IPs and copy it to a local folder called ```IPs
 ```bash
 source GetIPs.sh
 ```
-Then you are good to go. From then on, you should go in Vivado and plug the stuff together.
+
+## Creating a project with the the three IPs together in a block design
+
+Run
+```bash
+vivado -mode tcl -source jet_trigger_chain.tcl
+```
+to create a project called jet_trigger_chain with a block design called jet_trigger_chain in which the IPs are linked together.
+
+Have fun!
