@@ -15,6 +15,8 @@ add_files -cflags "-std=c++11" "JetClustering/HLS_Phase1Clustering.cpp"
 add_files -cflags "-std=c++11" -tb "JetClustering/TB_Phase1Clustering.cpp"
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_jet_clustering
+# removing reset
+config_rtl -reset none
 #synthetising
 csynth_design
 #exporting IP
@@ -35,6 +37,8 @@ add_files -cflags "-std=c++11" "HistogramAndBuffer/RegionOffsets.cpp"
 add_files -cflags "-std=c++11" -tb "HistogramAndBuffer/TB_Histogrammer.cpp"
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_histogrammer
+# removing reset
+config_rtl -reset none
 #synthetising
 csynth_design
 #exporting IP
@@ -55,6 +59,8 @@ add_files -cflags "-std=c++11" -tb "HistogramAndBuffer/TB_HistogramBuffer.cpp"
 add_files -cflags "-std=c++11" "HistogramAndBuffer/RegionOffsets.cpp"
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_histogram_buffer
+# removing reset
+config_rtl -reset none
 #synthetising
 csynth_design
 #exporting IP
