@@ -23,7 +23,7 @@ source GetIPs.sh
 
 Run
 ```bash
-vivado -mode tcl -source jet_trigger_chain.tcl
+vivado -mode batch -source jet_trigger_chain.tcl
 ```
 to create a project called jet_trigger_chain with a block design called jet_trigger_chain in which the IPs are linked together.
 The script will wrap the block design, sythetise it, and produce an IP in IPs/jet_trigger_chain.
