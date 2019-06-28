@@ -60,6 +60,16 @@ void hls_histogram_buffer(
 {
   #pragma HLS array_partition variable=inBarrelBins dim=0
   #pragma HLS array_partition variable=outBins dim=0
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=inBarrelBins
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=outBins
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=inReset
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=outReset
+  // removing control bus from design
+  #pragma HLS interface ap_ctrl_none port=return
   
   #pragma HLS pipeline 
 
