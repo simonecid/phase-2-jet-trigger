@@ -27,3 +27,6 @@ reports/
 **/csim
 *.tar.gz
 *.zip
+IPs/
+jet_trigger_chain/
+*.jou
