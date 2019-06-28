@@ -46,6 +46,7 @@ if { $list_projs eq "" } {
    create_project -force jet_trigger_chain jet_trigger_chain -part xcku115-flvd1517-2-i
 }
 
+set_property target_language VHDL [current_project]
 
 # CHANGE DESIGN NAME HERE
 variable design_name
@@ -483,3 +484,16 @@ proc create_root_design { parentCell } {
 create_root_design ""
 
 common::send_msg_id "BD_TCL-1000" "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
+
+# synthetising block design and creating hdl wrapper
+update_compile_order -fileset sources_1
+make_wrapper -files [get_files jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd] -top
+add_files -norecurse jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/hdl/jet_trigger_chain_wrapper.vhd
+set_property synth_checkpoint_mode Singular [get_files  jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd]
+generate_target all [get_files  jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd]
+export_ip_user_files -of_objects [get_files jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd]
+launch_runs -jobs 4 jet_trigger_chain_synth_1
+export_simulation -of_objects [get_files jet_trigger_chain/jet_trigger_chain.srcs/sources_1/bd/jet_trigger_chain/jet_trigger_chain.bd] -directory jet_trigger_chain/jet_trigger_chain.ip_user_files/sim_scripts -ip_user_files_dir jet_trigger_chain/jet_trigger_chain.ip_user_files -ipstatic_source_dir jet_trigger_chain/jet_trigger_chain.ip_user_files/ipstatic -lib_map_path [list {modelsim=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/modelsim} {questa=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/questa} {ies=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/ies} {xcelium=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/xcelium} {vcs=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/vcs} {riviera=jet_trigger_chain/jet_trigger_chain.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
+
+ipx::package_project -root_dir IPs/jet_trigger_chain -vendor cern-cms -library hls -taxonomy /UserIP -generated_files -import_files -set_current false
