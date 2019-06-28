@@ -35,6 +35,16 @@ void hls_histogrammer(
   #pragma HLS data_pack variable=barrel_inputs
   #pragma HLS array_partition variable=barrel_inputs dim=0
   #pragma HLS array_partition variable=barrel_bins dim=0
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=barrel_inputs
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=barrel_bins
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=inReset
+  // no valid ports for the I/O
+  #pragma HLS interface ap_none port=outReset
+  // removing control bus from design
+  #pragma HLS interface ap_ctrl_none port=return
   #pragma HLS pipeline
 
   static unsigned char sNumberOfRegionsReceived = 0;
