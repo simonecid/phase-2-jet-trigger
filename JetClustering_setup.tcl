@@ -12,5 +12,8 @@ add_files -cflags "-std=c++11" "HLS_Phase1Clustering.cpp"
 # adding testbench files
 add_files -cflags "-std=c++11" -tb "TB_Phase1Clustering.cpp"
 
+# removing reset
+config_rtl -reset none
+
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_jet_clustering
