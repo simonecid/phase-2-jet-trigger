@@ -16,5 +16,8 @@ add_files -cflags "-std=c++11" "HLS_HistogramBuffer.cpp"
 # adding testbench files
 add_files -tb "TB_HistogramBuffer.cpp"
 
+# removing reset
+config_rtl -reset none
+
 # Sets the top-level function name that is going to be starting point for synthetisation
 set_top hls_histogram_buffer
