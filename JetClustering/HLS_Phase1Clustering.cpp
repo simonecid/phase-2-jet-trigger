@@ -101,6 +101,7 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
+  #pragma HLS data_pack variable=outJets
   // no valid ports for the I/O
   #pragma HLS interface ap_none port=inCaloGridPhiSlice
   // no valid ports for the I/O
