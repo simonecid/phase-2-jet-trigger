@@ -97,7 +97,7 @@ void hls_copyLine (const CaloGridPhiSlice inCaloGridPhiSlice, CaloGridPhiSlice o
   }
 }
 
-void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset) 
+void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
@@ -110,7 +110,6 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
   #pragma HLS interface ap_none port=reset
   // removing control bus from design
   #pragma HLS interface ap_ctrl_none port=return
-  #pragma HLS data_pack variable=outJets 
   #if HLS_JET_CLUSTERING_FULLY_PIPELINED==true
   #pragma HLS pipeline
   #endif
@@ -149,6 +148,7 @@ void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool 
     outJets[jetIdx].pt = lJets[jetIdx].pt;
     outJets[jetIdx].iPhi = lPhiIndex - lJets[jetIdx].iPhi;
     outJets[jetIdx].iEta = lJets[jetIdx].iEta;
+    outJets[jetIdx].dummy = lJets[jetIdx].dummy;
   }
 
   return;
