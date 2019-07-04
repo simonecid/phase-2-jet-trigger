@@ -35,14 +35,16 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #include <ap_int.h>
 
 typedef ap_uint<10> pt_type;
-typedef unsigned char eta_type;
-typedef unsigned char phi_type;
+typedef ap_uint<10> eta_type;
+typedef ap_uint<10> phi_type;
+typedef ap_uint<34> TDummy;
 
 
 typedef struct {
   pt_type pt;
   phi_type iPhi;
   eta_type iEta;
+  TDummy dummy; // 30 - 63
 } Jet;
 
 typedef pt_type CaloGrid[PHI_GRID_SIZE][ETA_GRID_SIZE];
