@@ -12,13 +12,15 @@ namespace hls
   typedef ap_uint<10> TEta;
   // typedef unsigned int TEta;
   typedef ap_uint<10> TPhi;
+  typedef ap_uint<34> TDummy;
   // typedef unsigned int TPhi;
   typedef TPt TBin;
   // typedef TBin TBins[PHI_GRID_SIZE][ETA_GRID_SIZE];
   typedef struct {
-    TPt pt;
-    TPhi iPhi;
-    TEta iEta;
+    TPt pt; //0-9
+    TPhi iPhi; //10-19
+    TEta iEta; //20-29
+    TDummy dummy; // 30 - 63
   } Input;
   typedef Input Barrel_Inputs[NUMBER_OF_INPUTS_PER_CLOCK];
   typedef Input TK_HG_Inputs[NUMBER_OF_INPUTS_PER_CLOCK];
