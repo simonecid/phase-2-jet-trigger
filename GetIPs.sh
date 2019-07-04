@@ -5,6 +5,7 @@
 rm -r IPs/HLS_JetClustering
 rm -r IPs/HLS_Histogrammer
 rm -r IPs/HLS_HistogramBuffer
+rm -r IPs/jet_trigger_chain
 
 mkdir -p IPs/HLS_JetClustering/
 mkdir -p IPs/HLS_Histogrammer/
