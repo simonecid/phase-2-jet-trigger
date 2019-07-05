@@ -248,7 +248,7 @@ void test5x5()
   }
 
   std::cout << "TEST 8" << std::endl;
-  clearGrid(grid;
+  clearGrid(grid);
   clearJets(jets);
   grid[0][8] = 50;
   grid[PHI_GRID_SIZE - 1][8] = 45;
