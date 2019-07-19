@@ -114,21 +114,25 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets,
   #pragma HLS pipeline
   #endif
   
-  static unsigned char sPhiIndex = 0;
+  static unsigned char sRegister = 0;
+  unsigned char lPhiIndex = 0;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
   static CaloGridPhiSlice sFirstPhiSlices[PHI_JET_SIZE - 1];
   #pragma HLS array_partition variable=sFirstPhiSlices complete dim=0
   if (reset)
   {
-    sPhiIndex = 0;
+    sRegister = 0;
     hls_clearGrid(sCaloGrid);
+  } 
+  else 
+  {
+    lPhiIndex = sRegister;
+    sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
   }
 
   CaloGridBuffer lCaloGridTmp;
   #pragma HLS array_partition variable=lCaloGridTmp complete dim=0 
-  unsigned char lPhiIndex = sPhiIndex;
-  sPhiIndex++;
   //storing the first phi slices to analyse them later when I got the last ones
   if (lPhiIndex < PHI_JET_SIZE - 1) hls_copyLine(inCaloGridPhiSlice, sFirstPhiSlices[lPhiIndex]);
   //storing in  the buffer

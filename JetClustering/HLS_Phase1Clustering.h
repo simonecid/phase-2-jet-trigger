@@ -16,6 +16,7 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #define NUMBER_OF_SEEDS ETA_GRID_SIZE
 //threshold for seeding
 #define SEED_THRESHOLD 5
+#define RESET_PERIOD 12
 
 //controls what is pipelined, HLS_JET_CLUSTERING_FULLY_PIPELINED sets everything to true
 #define FINDJET_PIPELINE false
