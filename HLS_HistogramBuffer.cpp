@@ -71,47 +71,47 @@ void hls_histogram_buffer(
   // removing control bus from design
   #pragma HLS interface ap_ctrl_none port=return
   
-  #pragma HLS pipeline 
+  #pragma HLS pipeline II=1
 
-  bool lReset = inReset;
+  // internal state register
+  static unsigned char sRegister = 0;
+  // tracks which phi line has been output
+  static unsigned char sOutputLine = 0;
+  unsigned char lRegionID = 0;
+  if (inReset) {
+    sRegister = 0;
+  }
+  else 
+  {
+  // id of incoming region
+    lRegionID = sRegister;
+    sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
+  }
 
   hls::Barrel_PfInputHistogram::TBins lBarrelBins;
   #pragma HLS array_partition variable=lBarrelBins dim=0 complete
   copy2D<decltype(inBarrelBins), N_ETA_BINS_BARREL_REGION, N_BINS_PHI_REGION, decltype(lBarrelBins)>
     (inBarrelBins, lBarrelBins); 
   
-  // counts how many regions have been received
-  static unsigned char sNumberOfRegionsReceived = 0;
-  // tracks which phi line has been output
-  static unsigned char sOutputLine = 0;
-  unsigned char lNumberOfRegionsReceived = (lReset) ? 0 : sNumberOfRegionsReceived;
-  unsigned char lOutputLine = (lReset) ? 0 : sOutputLine;
-  sNumberOfRegionsReceived = (lReset) ? 1 : sNumberOfRegionsReceived + 1;
-
-
   static TBuffer sBuffer;
 
   // checking if all the regions have been received
-  if (lNumberOfRegionsReceived < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
+  if (lRegionID < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)
   {
-    unsigned char etaOffset = returnBarrelEtaOffset(lNumberOfRegionsReceived);
-    unsigned char phiOffset = returnBarrelPhiOffset(lNumberOfRegionsReceived);
+    unsigned char etaOffset = returnBarrelEtaOffset(lRegionID);
+    unsigned char phiOffset = returnBarrelPhiOffset(lRegionID);
     copy2DToWindow<decltype(lBarrelBins), N_ETA_BINS_BARREL_REGION, N_BINS_PHI_REGION, decltype(sBuffer)>(lBarrelBins, sBuffer, etaOffset, phiOffset);
   }
 
+  unsigned char lOutputLine = (lRegionID < N_ETA_SEGMENTS - 1) ? 0 : lRegionID - (N_ETA_SEGMENTS - 1);
+
+  lOutputLine = (lOutputLine >= N_BINS_PHI) ? 0 : lOutputLine;
   copyOutputLoop: for (unsigned char iEta = 0; iEta < N_BINS_ETA; iEta++)
   {
     // checking if a line of regions has been received, if so we output the first phi line of the buffer
-    outBins[iEta] = (lNumberOfRegionsReceived < N_ETA_SEGMENTS - 1) ? nullPt : sBuffer.getval(lOutputLine, iEta);
+    outBins[iEta] = (lRegionID < N_ETA_SEGMENTS - 1) ? nullPt : sBuffer.getval(lOutputLine, iEta);
   }
 
-  // checking if a line of regions has been received, if not, surely the counter should stay to 0
-  // if yes, we have returned one in the line before, and I can increase this counter safely
-  unsigned char lNextOutputLine = (lNumberOfRegionsReceived < N_ETA_SEGMENTS - 1) ? 0 : sOutputLine + 1;
-  // updating the line register if we haven't reached the end of memory yet
-  sOutputLine = (sOutputLine == N_BINS_PHI_REGION * N_PHI_SEGMENTS - 1) ? sOutputLine : lNextOutputLine;
-
-  // if we have received a line of regions then we can emit the reset for the jet finder as we have started sending a new event
-  outReset = (lNumberOfRegionsReceived == N_ETA_SEGMENTS - 1);
+  outReset = inReset; //alignment reset
 
 }
