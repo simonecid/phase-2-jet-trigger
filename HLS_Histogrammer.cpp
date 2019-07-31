@@ -59,7 +59,7 @@ void hls_histogrammer(
 
   if (inReset)
   {
-    sRegister = 0;
+    sRegister = -1;
   }
   else 
   {
