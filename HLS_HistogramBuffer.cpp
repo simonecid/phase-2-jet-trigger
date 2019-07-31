@@ -2,6 +2,10 @@
 #include "HLS/Histogram2D.h"
 #include "RegionOffsets.h"
 
+#ifndef __SYNTHESIS__
+#include <iostream>
+#endif
+
 template <
   class TInputData,
   unsigned char inXSize,
@@ -84,8 +88,11 @@ void hls_histogram_buffer(
   else 
   {
   // id of incoming region
-    lRegionID = sRegister;
     sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
+    lRegionID = sRegister;
+    #ifndef __SYNTHESIS__
+    std::cout << "sRegister: " << +sRegister << std::endl;
+    #endif
   }
 
   hls::Barrel_PfInputHistogram::TBins lBarrelBins;
