@@ -96,7 +96,7 @@ void test5x5()
   std::cout << "TEST 1" << std::endl;
   clearJets(jets);
   clearGrid(grid);
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, true);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -117,7 +117,7 @@ void test5x5()
   std::cout << "TEST 2" << std::endl;
   clearJets(jets);
   grid[10][20] = 10;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -140,7 +140,7 @@ void test5x5()
   clearJets(jets);
   grid[4][5] = 10;
   grid[3][5] = 10;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -163,7 +163,7 @@ void test5x5()
   clearJets(jets);
   grid[4][5] = 10;
   grid[4][6] = 10;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -186,7 +186,7 @@ void test5x5()
   clearJets(jets);
   grid[4][5] = 10;
   grid[4][4] = 10;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -207,7 +207,7 @@ void test5x5()
   std::cout << "TEST 6" << std::endl;
   clearGrid(grid, SEED_THRESHOLD - 1);
   clearJets(jets);
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -229,7 +229,7 @@ void test5x5()
   clearGrid(grid, SEED_THRESHOLD - 1);
   clearJets(jets);
   grid[4][5] = SEED_THRESHOLD;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -248,13 +248,13 @@ void test5x5()
   }
 
   std::cout << "TEST 8" << std::endl;
-  clearGrid(grid;
+  clearGrid(grid);
   clearJets(jets);
   grid[0][8] = 50;
   grid[PHI_GRID_SIZE - 1][8] = 45;
   grid[PHI_GRID_SIZE - 1][7] = 45;
   grid[PHI_GRID_SIZE - 1][9] = 45;
-  runJetFinder(grid, jets);
+  runJetFinder(grid, jets, false);
   for (unsigned int tmIndex = 0; tmIndex < PHI_GRID_SIZE; tmIndex++)
   {
     for (unsigned int jetIndex = 0; jetIndex < NUMBER_OF_SEEDS; jetIndex++)
@@ -358,10 +358,15 @@ void test5x5()
 //   std::cout << "All test have been successfully passed." << std::endl;
 // }
 
-void runJetFinder(const CaloGrid caloGrid, TMJets tmJets)
+void runJetFinder(const CaloGrid caloGrid, TMJets tmJets, bool reset)
 {
   //sending the phi slices
   CaloGridPhiSlice phiSlice;
+  if (reset)
+  {
+    hls_jet_clustering(phiSlice, tmJets[0], true);
+    hls_jet_clustering(phiSlice, tmJets[0], false);
+  }
   for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
   {
     for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
@@ -369,7 +374,7 @@ void runJetFinder(const CaloGrid caloGrid, TMJets tmJets)
       phiSlice[iEtaIndex] = caloGrid[iPhiIndex][iEtaIndex];
     }
     // the first phi slice must reset the algo
-    if (iPhiIndex == 0) hls_jet_clustering(phiSlice, tmJets[0], true);
+    if (iPhiIndex == 0) hls_jet_clustering(phiSlice, tmJets[0], false);
     // the first slices (2 if jets is 5 slice wide) do not produce any real jet
     else if (iPhiIndex < PHI_JET_SIZE - 1) hls_jet_clustering(phiSlice, tmJets[0], false);
     // sending slices while receiving jets from the previous ones

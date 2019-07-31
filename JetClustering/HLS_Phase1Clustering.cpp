@@ -115,20 +115,23 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets,
   #endif
   
   static unsigned char sRegister = 0;
-  unsigned char lPhiIndex = 0;
+  unsigned char lPhiIndex;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
   static CaloGridPhiSlice sFirstPhiSlices[PHI_JET_SIZE - 1];
   #pragma HLS array_partition variable=sFirstPhiSlices complete dim=0
   if (reset)
   {
-    sRegister = 0;
+    sRegister = -2; // -2 because the previous stage in the next clock will receive region 1, then in the second region 2 and the jet finder will receive a row
     hls_clearGrid(sCaloGrid);
   } 
   else 
   {
-    lPhiIndex = sRegister;
     sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
+    lPhiIndex = sRegister;
+    #ifndef __SYNTHESIS__
+    std::cout << "sRegister: " << +sRegister << std::endl;
+    #endif
   }
 
   CaloGridBuffer lCaloGridTmp;

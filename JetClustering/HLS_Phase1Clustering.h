@@ -16,7 +16,7 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #define NUMBER_OF_SEEDS ETA_GRID_SIZE
 //threshold for seeding
 #define SEED_THRESHOLD 5
-#define RESET_PERIOD 12
+#define RESET_PERIOD 13
 
 //controls what is pipelined, HLS_JET_CLUSTERING_FULLY_PIPELINED sets everything to true
 #define FINDJET_PIPELINE false
@@ -55,7 +55,7 @@ typedef Jet Jets[NUMBER_OF_SEEDS];
 typedef Jets TMJets[ETA_GRID_SIZE];
 
 void hls_copyGrid (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
-void hls_jet_clustering(CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset);
+void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset);
 pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi);
 pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
 void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets);
