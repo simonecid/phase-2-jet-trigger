@@ -14,13 +14,13 @@ int main(int argc, char const *argv[])
 {
   // srand(time(NULL));
   
-  hls::Barrel_PfInputHistogram::TBins refBarrelBins[N_ETA_SEGMENTS_BARREL];
-  hls::TPt toTestBarrelBins[N_BINS_PHI_REGION][N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL];
+  hls::Barrel_PfInputHistogram::TBins refBarrelBins[RESET_PERIOD];
+  hls::TPt toTestBarrelBins[RESET_PERIOD][N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL];
 
   int val = 0;
-  for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
+  for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
   {
-    for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
+    for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
     {
       for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
       {
@@ -38,84 +38,21 @@ int main(int argc, char const *argv[])
 
   inReset = false;
 
-  for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
+  for (unsigned int regionId = 0; regionId < RESET_PERIOD; regionId++)
   {
-    // hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[0], (regionId == 0) ? true : false);
-    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[0], inReset, outReset);
-  }
-  for (unsigned int y = 1; y < N_BINS_PHI_REGION; y++)
-  {
-    // hls_histogram_buffer(refBarrelBins[0], toTestBarrelBins[y], false);
-    hls_histogram_buffer(refBarrelBins[0], toTestBarrelBins[y], inReset, outReset);
+    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], inReset, outReset);
   }
 
-  // for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
-  // {
-  //   for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
-  //   {
-  //     for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
-  //     {
-  //       std::cout << refBarrelBins[regionId][y][x] << "  ";
-  //     }
-  //   }
-  //   std::cout << std::endl;
-  // }
-
-  // std::cout << std::endl;
-  // std::cout << "------------------------------------" << std::endl;
-  // std::cout << std::endl;
-
-  // for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
-  // {
-  //   for (unsigned int x = 0; x < N_ETA_SEGMENTS_BARREL * N_ETA_BINS_BARREL_REGION; x++)
-  //   {
-  //     std::cout << toTestBarrelBins[y][x] << "  ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-
-  //testing periodic reset
-  for (unsigned int regionId = 0; regionId < 3; regionId++)
+  for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
   {
-    // hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[0], (regionId == 0) ? true : false);
-    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[0], inReset, outReset);
+    for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL + 0; regionId++)
+    {
+      for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
+      {
+        assert(refBarrelBins[regionId][y][x] == toTestBarrelBins[y + N_ETA_SEGMENTS_BARREL - 1][N_ETA_BINS_BARREL_REGION * regionId + x]);
+      }
+    }
   }
-
-  std::cout << "Sending a new event" << std::endl;
-  
-  for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
-  {
-    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[0], inReset, outReset);
-  }
-  for (unsigned int y = 1; y < N_BINS_PHI_REGION; y++)
-  {
-    hls_histogram_buffer(refBarrelBins[0], toTestBarrelBins[y], inReset, outReset);
-  }
-
-  // for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
-  // {
-  //   for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
-  //   {
-  //     for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
-  //     {
-  //       std::cout << refBarrelBins[regionId][y][x] << "  ";
-  //     }
-  //   }
-  //   std::cout << std::endl;
-  // }
-
-  // std::cout << std::endl;
-  // std::cout << "------------------------------------" << std::endl;
-  // std::cout << std::endl;
-
-  // for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
-  // {
-  //   for (unsigned int x = 0; x < N_ETA_SEGMENTS_BARREL * N_ETA_BINS_BARREL_REGION; x++)
-  //   {
-  //     std::cout << toTestBarrelBins[y][x] << "  ";
-  //   }
-  //   std::cout << std::endl;
-  // }
 
   for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
   {
@@ -123,11 +60,68 @@ int main(int argc, char const *argv[])
     {
       for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
       {
-        assert(refBarrelBins[regionId][y][x] == toTestBarrelBins[y][N_ETA_BINS_BARREL_REGION * regionId + x]);
+        std::cout << refBarrelBins[regionId][y][x] << "  ";
+      }
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << std::endl;
+  std::cout << "------------------------------------" << std::endl;
+  std::cout << std::endl;
+
+  for (unsigned int y = 1; y < N_BINS_PHI_REGION + 1; y++)
+  {
+    for (unsigned int x = 0; x < N_ETA_SEGMENTS_BARREL * N_ETA_BINS_BARREL_REGION; x++)
+    {
+      std::cout << toTestBarrelBins[y][x] << "  ";
+    }
+    std::cout << std::endl;
+  }
+
+  //testing periodic reset
+    std::cout << "Sending a new event" << std::endl;
+  
+  for (unsigned int regionId = 0; regionId < RESET_PERIOD; regionId++)
+  {
+    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], inReset, outReset);
+  }
+
+  for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
+  {
+    for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL + 0; regionId++)
+    {
+      for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
+      {
+        assert(refBarrelBins[regionId][y][x] == toTestBarrelBins[y + N_ETA_SEGMENTS_BARREL - 1][N_ETA_BINS_BARREL_REGION * regionId + x]);
       }
     }
   }
 
+  for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
+  {
+    for (unsigned int regionId = 0; regionId < N_ETA_SEGMENTS_BARREL; regionId++)
+    {
+      for (unsigned int x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
+      {
+        std::cout << refBarrelBins[regionId][y][x] << "  ";
+      }
+    }
+    std::cout << std::endl;
+  }
+
+  std::cout << std::endl;
+  std::cout << "------------------------------------" << std::endl;
+  std::cout << std::endl;
+
+  for (unsigned int y = 1; y < N_BINS_PHI_REGION + 1; y++)
+  {
+    for (unsigned int x = 0; x < N_ETA_SEGMENTS_BARREL * N_ETA_BINS_BARREL_REGION; x++)
+    {
+      std::cout << toTestBarrelBins[y][x] << "  ";
+    }
+    std::cout << std::endl;
+  }
 
   return 0;
 }
