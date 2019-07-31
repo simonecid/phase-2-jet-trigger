@@ -8,7 +8,7 @@ unsigned char returnBarrelEtaOffset(unsigned char regionId)
   return barrelEtaOffsets[regionId];
 }
 
-unsigned char returnBarrelPhiOffset(unsigned char &regionId)
+unsigned char returnBarrelPhiOffset(unsigned char regionId)
 {
   #pragma HLS inline
   const unsigned char barrelPhiOffsets[4] = {0, 0, 0, 0};
