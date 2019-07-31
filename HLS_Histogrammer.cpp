@@ -2,6 +2,10 @@
 #include "HLS/Histogram2D.h"
 #include "RegionOffsets.h"
 
+#ifndef __SYNTHESIS__
+#include <iostream>
+#endif
+
 template <class THistogram, class TBins, class TConstInputs, class TInputs>
 void histogramInputs(TConstInputs inputs, TBins bins, unsigned char etaOffset, unsigned char phiOffset)
 {
@@ -59,9 +63,12 @@ void hls_histogrammer(
   }
   else 
   {
-    lRegionID = sRegister;
     // if we are one clock before the reset period, instead of incrementing the counter, we reset it
     sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
+    lRegionID = sRegister;
+    #ifndef __SYNTHESIS__
+    std::cout << "sRegister: " << +sRegister << std::endl;
+    #endif
   }
 
   histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
