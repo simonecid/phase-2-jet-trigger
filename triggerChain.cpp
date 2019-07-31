@@ -5,7 +5,7 @@
 
 #include <assert.h>
 
-#define ITERATIONS 18
+#define ITERATIONS RESET_PERIOD*2
 
 typedef hls::TPt BarrelPhiSlice[N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL];
 
@@ -29,21 +29,31 @@ int main(int argc, char const *argv[])
   inputs[1][3].pt = 100;
   inputs[1][3].iPhi = 25;
   inputs[1][3].iEta = 25;
+  inputs[RESET_PERIOD + 1][3].pt = 100;
+  inputs[RESET_PERIOD + 1][3].iPhi = 25;
+  inputs[RESET_PERIOD + 1][3].iEta = 25;
+
+  bool inReset = true;
+  bool outReset1, outReset2;
+  hls_histogrammer(inputs[0], barrel_bins[0], inReset, outReset1);
+  hls_histogram_buffer(barrel_bins[0], barrelPhiSlices[0], outReset1, outReset2);
+  hls_jet_clustering(barrelPhiSlices[0], jets[0], outReset2);
 
   for (unsigned int iteration = 0; iteration < ITERATIONS; iteration++)
   {
-    const bool inReset = (iteration == 0);
+    bool inReset = false;
     bool outReset1, outReset2;
     hls_histogrammer(inputs[iteration], barrel_bins[iteration], inReset, outReset1);
     hls_histogram_buffer(barrel_bins[iteration], barrelPhiSlices[iteration], outReset1, outReset2);
     hls_jet_clustering(barrelPhiSlices[iteration], jets[iteration], outReset2);
   }
 
-  // std::raise(SIGINT);
-
   assert(jets[5][11].pt == 100);
   assert(jets[5][11].iEta == 11);
   assert(jets[5][11].iPhi == 2);
+  assert(jets[5+RESET_PERIOD][11].pt == 100);
+  assert(jets[5+RESET_PERIOD][11].iEta == 11);
+  assert(jets[5+RESET_PERIOD][11].iPhi == 2);
 
   return 0;
 }
