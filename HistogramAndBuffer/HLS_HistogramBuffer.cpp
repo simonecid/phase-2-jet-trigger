@@ -83,7 +83,7 @@ void hls_histogram_buffer(
   static unsigned char sOutputLine = 0;
   unsigned char lRegionID = 0;
   if (inReset) {
-    sRegister = 0;
+    sRegister = -1;
   }
   else 
   {
