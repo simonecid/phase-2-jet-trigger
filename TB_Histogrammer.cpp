@@ -81,8 +81,14 @@ int main(int argc, char const *argv[])
   lBarrel_Inputs[0].iEta = 10;
   lBarrel_Inputs[0].iPhi = 20;
 
-  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins);
-  
+  bool inReset, outReset;
+  inReset = true;
+  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
+  assert(outReset == inReset);
+
+  inReset = false;
+  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
+  assert(outReset == inReset);
   for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
     for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
@@ -104,8 +110,8 @@ int main(int argc, char const *argv[])
   lBarrel_Inputs[2].iEta = 10;
   lBarrel_Inputs[2].iPhi = 20;
 
-  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins);
-  
+  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
+  assert(outReset == inReset);
   for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
     for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)
@@ -127,8 +133,8 @@ int main(int argc, char const *argv[])
   lBarrel_Inputs[2].iEta = 02;
   lBarrel_Inputs[2].iPhi = 19;
 
-  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins);
-  
+  hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
+  assert(outReset == inReset);
   for (unsigned char y = 0; y < N_BINS_PHI_REGION; y++)
   {
     for (unsigned char x = 0; x < N_ETA_BINS_BARREL_REGION; x++)

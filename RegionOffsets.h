@@ -5,7 +5,7 @@
 
 unsigned char returnBarrelEtaOffset(unsigned char regionId);
 
-unsigned char returnBarrelPhiOffset(unsigned char &regionId);
+unsigned char returnBarrelPhiOffset(unsigned char regionId);
 
 unsigned char returnTKHGEtaOffset(unsigned char regionId);
 
