@@ -5,7 +5,7 @@
 #include <csignal>
 #endif
 
-pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi)
+TPt hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi)
 {
   // #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -114,21 +114,28 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets,
   #pragma HLS pipeline
   #endif
   
-  static unsigned char sPhiIndex = 0;
+  static unsigned char sRegister = 0;
+  unsigned char lPhiIndex;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
   static CaloGridPhiSlice sFirstPhiSlices[PHI_JET_SIZE - 1];
   #pragma HLS array_partition variable=sFirstPhiSlices complete dim=0
   if (reset)
   {
-    sPhiIndex = 0;
+    sRegister = -2; // -2 because the previous stage in the next clock will receive region 1, then in the second region 2 and the jet finder will receive a row
     hls_clearGrid(sCaloGrid);
+  } 
+  else 
+  {
+    sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
+    lPhiIndex = sRegister;
+    #ifndef __SYNTHESIS__
+    std::cout << "sRegister: " << +sRegister << std::endl;
+    #endif
   }
 
   CaloGridBuffer lCaloGridTmp;
   #pragma HLS array_partition variable=lCaloGridTmp complete dim=0 
-  unsigned char lPhiIndex = sPhiIndex;
-  sPhiIndex++;
   //storing the first phi slices to analyse them later when I got the last ones
   if (lPhiIndex < PHI_JET_SIZE - 1) hls_copyLine(inCaloGridPhiSlice, sFirstPhiSlices[lPhiIndex]);
   //storing in  the buffer
@@ -175,7 +182,7 @@ void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets)
   }
 }
 
-pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre) 
+TPt hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre) 
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -183,9 +190,9 @@ pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, uns
   #if FINDJET_PIPELINE_AND_UNROLL==true
   #pragma HLS pipeline
   #endif
-  pt_type centralPt = caloGrid[iPhiCentre][iEtaCentre];
+  TPt centralPt = caloGrid[iPhiCentre][iEtaCentre];
   bool isLocalMaximum = (centralPt < SEED_THRESHOLD) ? false : true;
-  pt_type ptSum = 0;
+  TPt ptSum = 0;
   // Scanning through the grid centered on the seed
   checkMaximumEtaLoop: for (char etaIndex = -ETA_JET_SIZE/2; etaIndex <= ETA_JET_SIZE/2; etaIndex++)
   {
@@ -194,7 +201,7 @@ pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, uns
       #if FINDJET_PIPELINE==true
       #pragma HLS pipeline
       #endif
-      pt_type towerEnergy = hls_getTowerEnergy(caloGrid, iEtaCentre + etaIndex, iPhiCentre + phiIndex);
+      TPt towerEnergy = hls_getTowerEnergy(caloGrid, iEtaCentre + etaIndex, iPhiCentre + phiIndex);
       ptSum += towerEnergy;
       if ((etaIndex == 0) && (phiIndex == 0)) continue;
       if (centralPt < towerEnergy) {
