@@ -35,29 +35,29 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 
 #include <ap_int.h>
 
-typedef ap_uint<10> pt_type;
-typedef ap_uint<10> eta_type;
-typedef ap_uint<10> phi_type;
-typedef ap_uint<34> TDummy;
+typedef ap_uint<16> TPt; // LSB = 0.25 GeV
+typedef ap_uint<10> TEta; // LSB is eq. to 0.0043633231, 1/4 of ECAL crystal eta
+typedef ap_uint<10> TPhi; // LSB is eq. to 0.0043633231, 1/4 of ECAL crystal eta
+typedef ap_uint<28> TDummy;
 
 
 typedef struct {
-  pt_type pt;
-  phi_type iPhi;
-  eta_type iEta;
+  TPt pt;
+  TPhi iPhi;
+  TEta iEta;
   TDummy dummy; // 30 - 63
 } Jet;
 
-typedef pt_type CaloGrid[PHI_GRID_SIZE][ETA_GRID_SIZE];
-typedef pt_type CaloGridBuffer[PHI_JET_SIZE][ETA_GRID_SIZE];
-typedef pt_type CaloGridPhiSlice[ETA_GRID_SIZE];
+typedef TPt CaloGrid[PHI_GRID_SIZE][ETA_GRID_SIZE];
+typedef TPt CaloGridBuffer[PHI_JET_SIZE][ETA_GRID_SIZE];
+typedef TPt CaloGridPhiSlice[ETA_GRID_SIZE];
 typedef Jet Jets[NUMBER_OF_SEEDS];
 typedef Jets TMJets[ETA_GRID_SIZE];
 
 void hls_copyGrid (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
 void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset);
-pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi);
-pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
+TPt hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi);
+TPt hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
 void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets);
 void hls_copyLine (const CaloGridPhiSlice caloGridPhiSlice, CaloGridBuffer outCaloGrid, unsigned char etaIndex);
 void hls_shiftGridLeft (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);

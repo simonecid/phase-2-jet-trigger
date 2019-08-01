@@ -54,7 +54,7 @@ void clearJets(TMJets jets)
   return;
 }
 
-void clearGrid(CaloGrid grid, pt_type value) 
+void clearGrid(CaloGrid grid, TPt value) 
 {
   for (unsigned char iEtaIndex = 0; iEtaIndex < ETA_GRID_SIZE; iEtaIndex++) 
   {

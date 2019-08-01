@@ -5,7 +5,7 @@
 #include <csignal>
 #endif
 
-pt_type hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi)
+TPt hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi)
 {
   // #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -182,7 +182,7 @@ void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets)
   }
 }
 
-pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre) 
+TPt hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre) 
 {
   #if INLINE_EVERYTHING==true
   #pragma HLS inline
@@ -190,9 +190,9 @@ pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, uns
   #if FINDJET_PIPELINE_AND_UNROLL==true
   #pragma HLS pipeline
   #endif
-  pt_type centralPt = caloGrid[iPhiCentre][iEtaCentre];
+  TPt centralPt = caloGrid[iPhiCentre][iEtaCentre];
   bool isLocalMaximum = (centralPt < SEED_THRESHOLD) ? false : true;
-  pt_type ptSum = 0;
+  TPt ptSum = 0;
   // Scanning through the grid centered on the seed
   checkMaximumEtaLoop: for (char etaIndex = -ETA_JET_SIZE/2; etaIndex <= ETA_JET_SIZE/2; etaIndex++)
   {
@@ -201,7 +201,7 @@ pt_type hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, uns
       #if FINDJET_PIPELINE==true
       #pragma HLS pipeline
       #endif
-      pt_type towerEnergy = hls_getTowerEnergy(caloGrid, iEtaCentre + etaIndex, iPhiCentre + phiIndex);
+      TPt towerEnergy = hls_getTowerEnergy(caloGrid, iEtaCentre + etaIndex, iPhiCentre + phiIndex);
       ptSum += towerEnergy;
       if ((etaIndex == 0) && (phiIndex == 0)) continue;
       if (centralPt < towerEnergy) {
