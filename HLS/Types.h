@@ -7,20 +7,20 @@
 
 namespace hls
 {
-  typedef ap_uint<10> TPt;
+  typedef ap_uint<16> TPt; // LSB = 0.25 GeV
   // typedef unsigned int TPt;
-  typedef ap_uint<10> TEta;
+  typedef ap_uint<10> TEta; // LSB is eq. to 0.0043633231, 1/4 of ECAL crystal eta
   // typedef unsigned int TEta;
-  typedef ap_uint<10> TPhi;
-  typedef ap_uint<34> TDummy;
+  typedef ap_uint<10> TPhi; // LSB is eq. to 0.0043633231, 1/4 of ECAL crystal eta
+  typedef ap_uint<28> TDummy;
   // typedef unsigned int TPhi;
   typedef TPt TBin;
   // typedef TBin TBins[PHI_GRID_SIZE][ETA_GRID_SIZE];
   typedef struct {
-    TPt pt; //0-9
-    TPhi iPhi; //10-19
-    TEta iEta; //20-29
-    TDummy dummy; // 30 - 63
+    TPt pt; //0-15
+    TPhi iPhi; //16-25
+    TEta iEta; //26-35
+    TDummy dummy; // 35 - 63
   } Input;
   typedef Input Barrel_Inputs[NUMBER_OF_INPUTS_PER_CLOCK];
   typedef Input TK_HG_Inputs[NUMBER_OF_INPUTS_PER_CLOCK];
