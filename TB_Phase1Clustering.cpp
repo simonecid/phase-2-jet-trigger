@@ -362,10 +362,11 @@ void runJetFinder(const CaloGrid caloGrid, TMJets tmJets, bool reset)
 {
   //sending the phi slices
   CaloGridPhiSlice phiSlice;
+  Links lLinks;
   if (reset)
   {
-    hls_jet_clustering(phiSlice, tmJets[0], true);
-    hls_jet_clustering(phiSlice, tmJets[0], false);
+    hls_jet_clustering(phiSlice, lLinks, true);
+    hls_jet_clustering(phiSlice, lLinks, false);
   }
   for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_GRID_SIZE; iPhiIndex++) 
   {
@@ -374,16 +375,28 @@ void runJetFinder(const CaloGrid caloGrid, TMJets tmJets, bool reset)
       phiSlice[iEtaIndex] = caloGrid[iPhiIndex][iEtaIndex];
     }
     // the first phi slice must reset the algo
-    if (iPhiIndex == 0) hls_jet_clustering(phiSlice, tmJets[0], false);
+    if (iPhiIndex == 0) hls_jet_clustering(phiSlice, lLinks, false);
     // the first slices (2 if jets is 5 slice wide) do not produce any real jet
-    else if (iPhiIndex < PHI_JET_SIZE - 1) hls_jet_clustering(phiSlice, tmJets[0], false);
+    else if (iPhiIndex < PHI_JET_SIZE - 1) hls_jet_clustering(phiSlice, lLinks, false);
     // sending slices while receiving jets from the previous ones
-    else hls_jet_clustering(phiSlice, tmJets[iPhiIndex - PHI_JET_SIZE + 1], false);
+    else {
+      hls_jet_clustering(phiSlice, lLinks, false);
+      for (unsigned int x = 0; x < NUMBER_OF_SEEDS; x++)
+      {
+        //unpacking
+        tmJets[iPhiIndex - PHI_JET_SIZE + 1][x] = lLinks[x >> 1][x % 2];
+      }
+    }
   }
   //we need to process the remaining PHI_JET_SIZE - 1 slices
   for (unsigned char iPhiIndex = 0; iPhiIndex < PHI_JET_SIZE - 1; iPhiIndex++) 
   {
-    hls_jet_clustering(phiSlice, tmJets[PHI_GRID_SIZE - PHI_JET_SIZE + 1 + iPhiIndex], false);
+    hls_jet_clustering(phiSlice, lLinks, false);
+    for (unsigned int x = 0; x < NUMBER_OF_SEEDS; x++)
+    {
+      //unpacking
+      tmJets[PHI_GRID_SIZE - PHI_JET_SIZE + 1 + iPhiIndex][x] = lLinks[x >> 1][x % 2];
+    }
   }
   //done
 }

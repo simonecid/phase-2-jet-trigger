@@ -97,7 +97,7 @@ void hls_copyLine (const CaloGridPhiSlice inCaloGridPhiSlice, CaloGridPhiSlice o
   }
 }
 
-void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets, bool reset) 
+void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets, bool reset) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
@@ -152,10 +152,9 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Jets outJets,
   
   copyBackJets:for (unsigned char jetIdx = 0 ; jetIdx < NUMBER_OF_SEEDS; jetIdx++) 
   {
-    outJets[jetIdx].pt = lJets[jetIdx].pt;
-    outJets[jetIdx].iPhi = lPhiIndex - lJets[jetIdx].iPhi;
-    outJets[jetIdx].iEta = lJets[jetIdx].iEta;
-    outJets[jetIdx].dummy = lJets[jetIdx].dummy;
+    outJets[jetIdx >> 1][jetIdx % 2].pt = lJets[jetIdx].pt;
+    outJets[jetIdx >> 1][jetIdx % 2].iPhi = lPhiIndex - lJets[jetIdx].iPhi;
+    outJets[jetIdx >> 1][jetIdx % 2].iEta = lJets[jetIdx].iEta;
   }
 
   return;
