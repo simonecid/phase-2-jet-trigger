@@ -18,8 +18,8 @@
 
 #define N_BINS_PHI_REGION 8
 
-#define ETA_BIN_SIZE 10
-#define PHI_BIN_SIZE 10
+#define ETA_BIN_SIZE 172
+#define PHI_BIN_SIZE 161
 
 // #define ETA_BARREL_ 36
 // #define ETA_GRID_SIZE ETA_BARREL_SIZE
