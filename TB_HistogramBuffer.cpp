@@ -80,7 +80,7 @@ int main(int argc, char const *argv[])
   }
 
   //testing periodic reset
-    std::cout << "Sending a new event" << std::endl;
+  std::cout << "Sending a new event" << std::endl;
   
   for (unsigned int regionId = 0; regionId < RESET_PERIOD; regionId++)
   {
