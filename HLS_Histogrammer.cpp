@@ -53,11 +53,17 @@ void hls_histogrammer(
 
   // keeps track of when to reset the internal status
   static unsigned char sRegister = 0;
+  static bool sPreviousReset = false;
   unsigned char lEtaOffset = 0;
   unsigned char lPhiOffset = 0;
   unsigned char lRegionID = 0;
 
-  if (inReset)
+  // reset if we have a transition 0 -> 1 of the reset signal
+  bool lReset = ((inReset) && (!sPreviousReset));
+  sPreviousReset = inReset;
+
+
+  if (lReset)
   {
     sRegister = -1;
   }
@@ -73,7 +79,7 @@ void hls_histogrammer(
 
   histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
     (barrel_inputs, barrel_bins, lEtaOffset, lPhiOffset);
-  outReset = inReset; //alignment`
+  outReset = lReset; //alignment`
 
   return;
 }
