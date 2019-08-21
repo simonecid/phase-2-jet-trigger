@@ -30,17 +30,17 @@ int main(int argc, char const *argv[])
     }
   }
 
-  bool inReset, outReset;
+  bool d0Valid, outReset;
 
-  inReset = true;
+  d0Valid = true;
 
-  hls_histogram_buffer(refBarrelBins[0], toTestBarrelBins[0], inReset, outReset);
+  hls_histogram_buffer(refBarrelBins[0], toTestBarrelBins[0], d0Valid, outReset);
 
-  inReset = false;
+  d0Valid = false;
 
   for (unsigned int regionId = 0; regionId < RESET_PERIOD; regionId++)
   {
-    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], inReset, outReset);
+    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], d0Valid, outReset);
   }
 
   for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
   
   for (unsigned int regionId = 0; regionId < RESET_PERIOD; regionId++)
   {
-    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], inReset, outReset);
+    hls_histogram_buffer(refBarrelBins[regionId], toTestBarrelBins[regionId], d0Valid, outReset);
   }
 
   for (unsigned int y = 0; y < N_BINS_PHI_REGION; y++)
