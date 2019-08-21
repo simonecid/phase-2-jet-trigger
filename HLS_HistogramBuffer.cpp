@@ -79,10 +79,15 @@ void hls_histogram_buffer(
 
   // internal state register
   static unsigned char sRegister = 0;
+  static bool sPreviousReset = false;
   // tracks which phi line has been output
   static unsigned char sOutputLine = 0;
   unsigned char lRegionID = 0;
-  if (inReset) {
+
+  bool lReset = ((inReset) && (!sPreviousReset));
+  sPreviousReset = inReset;
+
+  if (lReset) {
     sRegister = -1;
   }
   else 
@@ -119,6 +124,6 @@ void hls_histogram_buffer(
     outBins[iEta] = (lRegionID < N_ETA_SEGMENTS - 1) ? nullPt : sBuffer.getval(lOutputLine, iEta);
   }
 
-  outReset = inReset; //alignment reset
+  outReset = lReset; //alignment`
 
 }
