@@ -78,8 +78,8 @@ int main(int argc, char const *argv[])
   resetInputs<decltype(lBarrel_Inputs)>(lBarrel_Inputs);
 
   lBarrel_Inputs[0].pt = 100;
-  lBarrel_Inputs[0].iEta = 10;
-  lBarrel_Inputs[0].iPhi = 20;
+  lBarrel_Inputs[0].iEta = 19;
+  lBarrel_Inputs[0].iPhi = 40;
 
   bool inReset, outReset;
   inReset = true;
@@ -104,11 +104,11 @@ int main(int argc, char const *argv[])
   resetInputs<decltype(lBarrel_Inputs)>(lBarrel_Inputs);
 
   lBarrel_Inputs[0].pt = 100;
-  lBarrel_Inputs[0].iEta = 10;
-  lBarrel_Inputs[0].iPhi = 20;
+  lBarrel_Inputs[0].iEta = 19;
+  lBarrel_Inputs[0].iPhi = 40;
   lBarrel_Inputs[2].pt = 100;
-  lBarrel_Inputs[2].iEta = 10;
-  lBarrel_Inputs[2].iPhi = 20;
+  lBarrel_Inputs[2].iEta = 19;
+  lBarrel_Inputs[2].iPhi = 40;
 
   hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
   assert(outReset == inReset);
@@ -123,15 +123,18 @@ int main(int argc, char const *argv[])
     }
   }
   
-  std::cout << "Testing two bin fill" << std::endl;
+  std::cout << "Testing two bin fill and overflow" << std::endl;
   resetInputs<decltype(lBarrel_Inputs)>(lBarrel_Inputs);
 
   lBarrel_Inputs[0].pt = 100;
-  lBarrel_Inputs[0].iEta = 12;
-  lBarrel_Inputs[0].iPhi = 20;
+  lBarrel_Inputs[0].iEta = 24;
+  lBarrel_Inputs[0].iPhi = 40;
   lBarrel_Inputs[2].pt = 100;
   lBarrel_Inputs[2].iEta = 02;
-  lBarrel_Inputs[2].iPhi = 19;
+  lBarrel_Inputs[2].iPhi = 39;
+  lBarrel_Inputs[3].pt = 100;
+  lBarrel_Inputs[3].iEta = 180;
+  lBarrel_Inputs[3].iPhi = 170;
 
   hls_histogrammer(lBarrel_Inputs, Barrel_outputBins, inReset, outReset);
   assert(outReset == inReset);
@@ -142,6 +145,7 @@ int main(int argc, char const *argv[])
       hls::TBin lBinRef = 0;
       if ((x == 1) && (y == 2)) lBinRef = 100;
       if ((x == 0) && (y == 1)) lBinRef = 100;
+      if ((x == 8) && (y == 7)) lBinRef = 100;
       hls::TBin lBin = Barrel_outputBins[y][x];
       assert(lBin == lBinRef);
     }
