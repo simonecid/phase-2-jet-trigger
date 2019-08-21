@@ -58,8 +58,8 @@ const hls::TPt nullPt = 0;
 void hls_histogram_buffer(
                       const hls::Barrel_PfInputHistogram::TBins inBarrelBins,
                       hls::TPt outBins[N_BINS_ETA],
-                      bool inReset,
-                      bool & outReset
+                      bool d0Valid,
+                      bool & outValid
                      )
 {
   #pragma HLS array_partition variable=inBarrelBins dim=0
@@ -69,9 +69,9 @@ void hls_histogram_buffer(
   // no valid ports for the I/O
   #pragma HLS interface ap_none port=outBins
   // no valid ports for the I/O
-  #pragma HLS interface ap_none port=inReset
+  #pragma HLS interface ap_none port=d0Valid
   // no valid ports for the I/O
-  #pragma HLS interface ap_none port=outReset
+  #pragma HLS interface ap_none port=outValid
   // removing control bus from design
   #pragma HLS interface ap_ctrl_none port=return
   
@@ -84,8 +84,8 @@ void hls_histogram_buffer(
   static unsigned char sOutputLine = 0;
   unsigned char lRegionID = 0;
 
-  bool lReset = ((inReset) && (!sPreviousReset));
-  sPreviousReset = inReset;
+  bool lReset = ((d0Valid) && (!sPreviousReset));
+  sPreviousReset = d0Valid;
 
   if (lReset) {
     sRegister = -1;
@@ -124,6 +124,6 @@ void hls_histogram_buffer(
     outBins[iEta] = (lRegionID < N_ETA_SEGMENTS - 1) ? nullPt : sBuffer.getval(lOutputLine, iEta);
   }
 
-  outReset = lReset; //alignment`
+  outValid = d0Valid; //alignment
 
 }
