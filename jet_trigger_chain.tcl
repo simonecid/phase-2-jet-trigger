@@ -292,10 +292,10 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.LAYERED_METADATA {xilinx.com:interface:datatypes:1.0 {DATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type automatic dependency {} format long minimum {} maximum {}} value 0} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} struct {field_9 {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value 9} enabled {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true} datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type automatic dependency {} format long minimum {} maximum {}} value 0} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} struct {field_pt {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value pt} enabled {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true} datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 10} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} field_iPhi {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value iPhi} enabled {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true} datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 10} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 10} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} field_iEta {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value iEta} enabled {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true} datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 10} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 20} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}}}}}}}}}} \
  ] $barrel_inputs_9_0
-  set inReset_0 [ create_bd_port -dir I -type data inReset_0 ]
+  set d0Valid_0 [ create_bd_port -dir I -type data d0Valid_0 ]
   set_property -dict [ list \
    CONFIG.LAYERED_METADATA {xilinx.com:interface:datatypes:1.0 {DATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 1} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0}}}}} \
- ] $inReset_0
+ ] $d0Valid_0
   set in_clock_240MHz [ create_bd_port -dir I -type clk in_clock_240MHz ]
   set_property -dict [ list \
    CONFIG.FREQ_HZ {240000000} \
@@ -371,7 +371,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net hls_histogram_buffer_0_outBins_7_V [get_bd_pins hls_histogram_buffer_0/outBins_7_V] [get_bd_pins hls_jet_clustering_0/inCaloGridPhiSlice_7_V]
   connect_bd_net -net hls_histogram_buffer_0_outBins_8_V [get_bd_pins hls_histogram_buffer_0/outBins_8_V] [get_bd_pins hls_jet_clustering_0/inCaloGridPhiSlice_8_V]
   connect_bd_net -net hls_histogram_buffer_0_outBins_9_V [get_bd_pins hls_histogram_buffer_0/outBins_9_V] [get_bd_pins hls_jet_clustering_0/inCaloGridPhiSlice_9_V]
-  connect_bd_net -net hls_histogram_buffer_0_outReset [get_bd_pins hls_histogram_buffer_0/outReset] [get_bd_pins hls_jet_clustering_0/reset]
+  connect_bd_net -net hls_histogram_buffer_0_outReset [get_bd_pins hls_histogram_buffer_0/outValid] [get_bd_pins hls_jet_clustering_0/d0Valid]
   connect_bd_net -net hls_histogrammer_0_barrel_bins_0_0_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_0_0_V] [get_bd_pins hls_histogrammer_0/barrel_bins_0_0_V]
   connect_bd_net -net hls_histogrammer_0_barrel_bins_0_1_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_0_1_V] [get_bd_pins hls_histogrammer_0/barrel_bins_0_1_V]
   connect_bd_net -net hls_histogrammer_0_barrel_bins_0_2_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_0_2_V] [get_bd_pins hls_histogrammer_0/barrel_bins_0_2_V]
@@ -444,7 +444,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net hls_histogrammer_0_barrel_bins_7_6_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_7_6_V] [get_bd_pins hls_histogrammer_0/barrel_bins_7_6_V]
   connect_bd_net -net hls_histogrammer_0_barrel_bins_7_7_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_7_7_V] [get_bd_pins hls_histogrammer_0/barrel_bins_7_7_V]
   connect_bd_net -net hls_histogrammer_0_barrel_bins_7_8_V [get_bd_pins hls_histogram_buffer_0/inBarrelBins_7_8_V] [get_bd_pins hls_histogrammer_0/barrel_bins_7_8_V]
-  connect_bd_net -net hls_histogrammer_0_outReset [get_bd_pins hls_histogram_buffer_0/inReset] [get_bd_pins hls_histogrammer_0/outReset]
+  connect_bd_net -net hls_histogrammer_0_outReset [get_bd_pins hls_histogram_buffer_0/d0Valid] [get_bd_pins hls_histogrammer_0/outValid]
   connect_bd_net -net hls_jet_clustering_0_outJets_0 [get_bd_ports outJets_0_0] [get_bd_pins hls_jet_clustering_0/outJets_0]
   connect_bd_net -net hls_jet_clustering_0_outJets_1 [get_bd_ports outJets_1_0] [get_bd_pins hls_jet_clustering_0/outJets_1]
   connect_bd_net -net hls_jet_clustering_0_outJets_2 [get_bd_ports outJets_2_0] [get_bd_pins hls_jet_clustering_0/outJets_2]
@@ -463,7 +463,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net hls_jet_clustering_0_outJets_15 [get_bd_ports outJets_15_0] [get_bd_pins hls_jet_clustering_0/outJets_15]
   connect_bd_net -net hls_jet_clustering_0_outJets_16 [get_bd_ports outJets_16_0] [get_bd_pins hls_jet_clustering_0/outJets_16]
   connect_bd_net -net hls_jet_clustering_0_outJets_17 [get_bd_ports outJets_17_0] [get_bd_pins hls_jet_clustering_0/outJets_17]
-  connect_bd_net -net inReset_0_1 [get_bd_ports inReset_0] [get_bd_pins hls_histogrammer_0/inReset]
+  connect_bd_net -net d0Valid_0_1 [get_bd_ports d0Valid_0] [get_bd_pins hls_histogrammer_0/d0Valid]
   connect_bd_net -net in_clock_240MHz_1 [get_bd_ports in_clock_240MHz] [get_bd_pins hls_histogram_buffer_0/ap_clk] [get_bd_pins hls_histogrammer_0/ap_clk] [get_bd_pins hls_jet_clustering_0/ap_clk]
 
   # Create address segments

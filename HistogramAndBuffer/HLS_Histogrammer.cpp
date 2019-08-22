@@ -32,8 +32,8 @@ void histogramInputs(TConstInputs inputs, TBins bins, unsigned char etaOffset, u
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
                       hls::Barrel_PfInputHistogram::TBins barrel_bins,
-                      bool inReset,
-                      bool & outReset
+                      bool d0Valid,
+                      bool & outValid
                      )
 {
   #pragma HLS data_pack variable=barrel_inputs
@@ -44,20 +44,27 @@ void hls_histogrammer(
   // no valid ports for the I/O
   #pragma HLS interface ap_none port=barrel_bins
   // no valid ports for the I/O
-  #pragma HLS interface ap_none port=inReset
+  #pragma HLS interface ap_none port=d0Valid
   // no valid ports for the I/O
-  #pragma HLS interface ap_none port=outReset
+  #pragma HLS interface ap_none port=outValid
   // removing control bus from design
   #pragma HLS interface ap_ctrl_none port=return
   #pragma HLS pipeline II=1
 
   // keeps track of when to reset the internal status
   static unsigned char sRegister = 0;
+  static bool sPreviousReset = false;
   unsigned char lEtaOffset = 0;
   unsigned char lPhiOffset = 0;
   unsigned char lRegionID = 0;
 
-  if (inReset)
+  // reset if we have a transition 0 -> 1 of the reset signal
+  bool lReset = ((d0Valid) && (!sPreviousReset));
+  sPreviousReset = d0Valid;
+
+
+  if (lReset)
+
   {
     sRegister = -1;
   }
@@ -73,7 +80,7 @@ void hls_histogrammer(
 
   histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
     (barrel_inputs, barrel_bins, lEtaOffset, lPhiOffset);
-  outReset = inReset; //alignment`
+  outValid = d0Valid; //alignment`
 
   return;
 }

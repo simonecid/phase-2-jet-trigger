@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
   hls::Barrel_Inputs inputs[ITERATIONS];
   hls::Barrel_PfInputHistogram::TBins barrel_bins[ITERATIONS];
   BarrelPhiSlice barrelPhiSlices[ITERATIONS];
-  Jets jets[ITERATIONS];
+  Links jets[ITERATIONS];
 
   for (unsigned int iteration = 0; iteration < ITERATIONS; iteration++)
   {
@@ -26,9 +26,9 @@ int main(int argc, char const *argv[])
     }
   }
 
-  inputs[1][3].pt = 100;
-  inputs[1][3].iPhi = 25;
-  inputs[1][3].iEta = 25;
+  inputs[0][3].pt = 100;
+  inputs[0][3].iPhi = 25;
+  inputs[0][3].iEta = 15;
   inputs[RESET_PERIOD + 1][3].pt = 100;
   inputs[RESET_PERIOD + 1][3].iPhi = 25;
   inputs[RESET_PERIOD + 1][3].iEta = 25;
@@ -48,12 +48,12 @@ int main(int argc, char const *argv[])
     hls_jet_clustering(barrelPhiSlices[iteration], jets[iteration], outReset2);
   }
 
-  assert(jets[5][11].pt == 100);
-  assert(jets[5][11].iEta == 11);
-  assert(jets[5][11].iPhi == 2);
-  assert(jets[5+RESET_PERIOD][11].pt == 100);
-  assert(jets[5+RESET_PERIOD][11].iEta == 11);
-  assert(jets[5+RESET_PERIOD][11].iPhi == 2);
+  assert(jets[5][1 / 2][1 % 2].pt == 100);
+  assert(jets[5][1 / 2][1 % 2].iEta == 1);
+  assert(jets[5][1 / 2][1 % 2].iPhi == 2);
+  assert(jets[5+RESET_PERIOD][11 / 2][11 % 2].pt == 100);
+  assert(jets[5+RESET_PERIOD][11 / 2][11 % 2].iEta == 11);
+  assert(jets[5+RESET_PERIOD][11 / 2][11 % 2].iPhi == 2);
 
   return 0;
 }

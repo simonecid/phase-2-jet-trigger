@@ -8,8 +8,8 @@
 void hls_histogrammer(
                       const hls::Barrel_Inputs barrel_inputs, 
                       hls::Barrel_PfInputHistogram::TBins barrel_bins,
-                      bool inReset,
-                      bool & outReset
+                      bool d0Valid,
+                      bool & outValid
                      );
 
 template<class TConstInputs, class TInputs>
