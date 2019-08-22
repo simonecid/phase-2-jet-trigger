@@ -97,7 +97,7 @@ void hls_copyLine (const CaloGridPhiSlice inCaloGridPhiSlice, CaloGridPhiSlice o
   }
 }
 
-void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets, bool reset) 
+void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets, bool d0Valid) 
 {
   #pragma HLS array_partition variable=inCaloGridPhiSlice complete dim=0
   #pragma HLS array_partition variable=outJets complete dim=0
@@ -108,7 +108,7 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets
   // no valid ports for the I/O
   #pragma HLS interface ap_none port=outJets
   // no valid ports for the I/O
-  #pragma HLS interface ap_none port=reset
+  #pragma HLS interface ap_none port=d0Valid
   // removing control bus from design
   #pragma HLS interface ap_ctrl_none port=return
   #if HLS_JET_CLUSTERING_FULLY_PIPELINED==true
@@ -116,12 +116,15 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets
   #endif
   
   static unsigned char sRegister = 0;
+  static bool sPreviousReset = false;
+  bool lReset = ((d0Valid) && (!sPreviousReset));
+  sPreviousReset = d0Valid;
   unsigned char lPhiIndex;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
   static CaloGridPhiSlice sFirstPhiSlices[PHI_JET_SIZE - 1];
   #pragma HLS array_partition variable=sFirstPhiSlices complete dim=0
-  if (reset)
+  if (lReset)
   {
     sRegister = -2; // -2 because the previous stage in the next clock will receive region 1, then in the second region 2 and the jet finder will receive a row
     hls_clearGrid(sCaloGrid);
