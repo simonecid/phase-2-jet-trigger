@@ -2,25 +2,28 @@
 
 import numpy as np
 
-numberOfSamples = 256
+# numberOfSamples = 256
+numberOfSamples = 24
 
-# generates grid of random numbers
-pt_array = np.random.randint(0, 30, size=numberOfSamples)
-eta_array = np.random.randint(0, 90, size=numberOfSamples)
-phi_array = np.random.randint(0, 80, size=numberOfSamples)
-#event = np.random.normal(loc=30, scale=10, size=(72, 96))
-#event = np.full((72, 96), 1)
+for generation in range(0, 100):
 
-event = np.empty((numberOfSamples, 3))
+  # generates grid of random numbers
+  pt_array = np.random.randint(0, 30, size=numberOfSamples)
+  eta_array = np.random.randint(0, 90, size=numberOfSamples)
+  phi_array = np.random.randint(0, 80, size=numberOfSamples)
+  #event = np.random.normal(loc=30, scale=10, size=(72, 96))
+  #event = np.full((72, 96), 1)
 
-for x in xrange(0, len(pt_array)):
-  event[x][0] = pt_array[x]
-  event[x][1] = eta_array[x]
-  event[x][2] = phi_array[x]
+  event = np.empty((numberOfSamples, 3))
 
-# save event to file
-np.savetxt("inputs.dat", event, fmt="%u")
+  for x in range(0, len(pt_array)):
+    event[x][0] = pt_array[x]
+    event[x][1] = eta_array[x]
+    event[x][2] = phi_array[x]
 
-#bin stuff
-bins, x_edges, y_edges = np.histogram2d(eta_array, phi_array, bins=[9, 8], range=[[0, 90], [0, 80]], weights=pt_array)
-np.savetxt("inputs_histogram.dat", bins, fmt="%u")
+  # save event to file
+  np.savetxt("inputs_" + str(generation)+ ".dat", event, fmt="%u")
+
+  #bin stuff
+  bins, x_edges, y_edges = np.histogram2d(eta_array, phi_array, bins=[9, 8], range=[[0, 90], [0, 80]], weights=pt_array)
+  np.savetxt("inputs_histogram_" + str(generation) + ".dat", bins, fmt="%u")

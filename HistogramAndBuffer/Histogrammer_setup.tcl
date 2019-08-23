@@ -3,8 +3,8 @@
 
 
 # creating project and solution
-open_project -reset HLS_Histogrammer
-open_solution -reset KU115
+open_project HLS_Histogrammer
+open_solution KU115
 
 #setting target device
 set_part xcku115-flvd1517-2-i
