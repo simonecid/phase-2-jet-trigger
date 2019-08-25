@@ -53,14 +53,12 @@ void hls_histogrammer(
 
   // keeps track of when to reset the internal status
   static unsigned char sRegister = 0;
-  static bool sPreviousReset = false;
   unsigned char lEtaOffset = 0;
   unsigned char lPhiOffset = 0;
   unsigned char lRegionID = 0;
 
   // reset if we have a transition 0 -> 1 of the reset signal
-  bool lReset = ((d0Valid) && (!sPreviousReset));
-  sPreviousReset = d0Valid;
+  bool lReset = d0Valid;
 
 
   if (lReset)

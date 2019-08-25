@@ -79,13 +79,11 @@ void hls_histogram_buffer(
 
   // internal state register
   static unsigned char sRegister = 0;
-  static bool sPreviousReset = false;
   // tracks which phi line has been output
   static unsigned char sOutputLine = 0;
   unsigned char lRegionID = 0;
 
-  bool lReset = ((d0Valid) && (!sPreviousReset));
-  sPreviousReset = d0Valid;
+  bool lReset = d0Valid;
 
   if (lReset) {
 

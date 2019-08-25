@@ -116,9 +116,7 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets
   #endif
   
   static unsigned char sRegister = 0;
-  static bool sPreviousReset = false;
-  bool lReset = ((d0Valid) && (!sPreviousReset));
-  sPreviousReset = d0Valid;
+  bool lReset = d0Valid;
   unsigned char lPhiIndex;
   static CaloGridBuffer sCaloGrid;
   #pragma HLS array_partition variable=sCaloGrid complete dim=0
