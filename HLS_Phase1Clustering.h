@@ -8,7 +8,7 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 */
 
 // size of the buffer holding the calogrid
-#define PHI_GRID_SIZE 9
+#define PHI_GRID_SIZE 8
 #define ETA_GRID_SIZE 18
 #define ETA_JET_SIZE 5
 #define NUMBER_OF_LINKS 72
@@ -37,6 +37,7 @@ I can run the jet finder once I received data able to cover PHI_GRID_SIZE*ETA_JE
 #include <ap_int.h>
 
 typedef ap_uint<16> TPt; // LSB = 0.25 GeV
+// typedef unsigned int TPt; // LSB = 0.25 GeV
 typedef ap_uint<8> TEta; // LSB is eq. to GRID_SIZE
 typedef ap_uint<8> TPhi; // LSB is eq. to GRID_SIZE
 
@@ -56,12 +57,16 @@ typedef TPt CaloGridPhiSlice[ETA_GRID_SIZE];
 typedef Jet Jets[NUMBER_OF_SEEDS];
 typedef Jets TMJets[ETA_GRID_SIZE];
 
+const TPhi kNullPhi = 0;
+const TEta kNullEta = 0;
+const TPt kNullPt = 0;
+
 void hls_copyGrid (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
 void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets, bool d0Valid);
-TPt hls_getTowerEnergy(const CaloGridBuffer caloGrid, char iEta, char iPhi);
-TPt hls_findJet(const CaloGridBuffer caloGrid, unsigned char iEtaCentre, unsigned char iPhiCentre);
+TPt hls_getTowerEnergy(const CaloGridBuffer caloGrid, TEta iEta, TPhi iPhi);
+TPt hls_findJet(const CaloGridBuffer caloGrid, TEta iEtaCentre, TPhi iPhiCentre);
 void hls_runJetFinders(const CaloGridBuffer inCaloGrid, Jets outJets);
-void hls_copyLine (const CaloGridPhiSlice caloGridPhiSlice, CaloGridBuffer outCaloGrid, unsigned char etaIndex);
+void hls_copyLine (const CaloGridPhiSlice caloGridPhiSlice, CaloGridBuffer outCaloGrid, TEta etaIndex);
 void hls_shiftGridLeft (const CaloGridBuffer inCaloGrid, CaloGridBuffer outCaloGrid);
 void hls_clearGrid(CaloGridBuffer grid);
 void hls_clearJets(TMJets jets);
