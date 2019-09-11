@@ -36,12 +36,24 @@ int main(int argc, char const *argv[])
     }
   }
 
-  inputs[RESET_PERIOD][3].pt = 100;
-  inputs[RESET_PERIOD][3].iPhi = 5;
-  inputs[RESET_PERIOD][3].iEta = 5;
-  inputs[RESET_PERIOD + 1][3].pt = 100;
-  inputs[RESET_PERIOD + 1][3].iPhi = 5;
-  inputs[RESET_PERIOD + 1][3].iEta = 5;
+  inputs[RESET_PERIOD][0].pt = 5.5 / 0.25;
+  inputs[RESET_PERIOD][0].iEta = 113;
+  inputs[RESET_PERIOD][0].iPhi = 127;
+  inputs[RESET_PERIOD][1].pt = 4.75 / 0.25;
+  inputs[RESET_PERIOD][1].iEta = 147;
+  inputs[RESET_PERIOD][1].iPhi = 149;
+  inputs[RESET_PERIOD][2].pt = 3.25 / 0.25;
+  inputs[RESET_PERIOD][2].iEta = 143;
+  inputs[RESET_PERIOD][2].iPhi = 137;
+  inputs[RESET_PERIOD][3].pt = 30.5 / 0.25;
+  inputs[RESET_PERIOD][3].iEta = 117;
+  inputs[RESET_PERIOD][3].iPhi = 139;
+  inputs[RESET_PERIOD][4].pt = 15.0 / 0.25;
+  inputs[RESET_PERIOD][4].iEta = 120;
+  inputs[RESET_PERIOD][4].iPhi = 134;
+  inputs[RESET_PERIOD][5].pt = 9.75 / 0.25;
+  inputs[RESET_PERIOD][5].iEta = 112;
+  inputs[RESET_PERIOD][5].iPhi = 153;
 
   bool inReset = true;
   bool outReset1, outReset2;
@@ -51,21 +63,39 @@ int main(int argc, char const *argv[])
 
   for (unsigned int iteration = 0; iteration < ITERATIONS; iteration++)
   {
-    std::cout << "Running cycle: " << iteration << ": \t";
+    std::cout << "Running cycle: " << iteration << ": \n";
     bool inReset = false;
     bool outReset1, outReset2;
     // if (iteration == 24) std::raise(SIGINT);
     hls_histogrammer(inputs[iteration], barrel_bins[iteration], inReset, outReset1);
     hls_histogram_buffer(barrel_bins[iteration], barrelPhiSlices[iteration], outReset1, outReset2);
     hls_jet_clustering(barrelPhiSlices[iteration], jets[iteration], outReset2);
+
+    std::cout << "PhiSlice: ";
+    for (hls::TEta etaIndex = 0; etaIndex < ETA_GRID_SIZE; etaIndex++)
+    {
+      std::cout << barrelPhiSlices[iteration][etaIndex] << " ";
+    }
+    std::cout << std::endl;
+    
+    for (unsigned int jetIdx = 0; jetIdx < NUMBER_OF_SEEDS ; jetIdx++)
+    {
+      if (jets[iteration][jetIdx >> 1][jetIdx % 2].pt > 0) 
+      {
+        std::cout << "Jet: " << jets[iteration][jetIdx >> 1][jetIdx % 2].pt * 0.25 << "\t" << jets[iteration][jetIdx >> 1][jetIdx % 2].iEta << "\t" << jets[iteration][jetIdx >> 1][jetIdx % 2].iPhi << std::endl;
+      }
+    }
+
   }
 
-  assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].pt == 100);
-  assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].iEta == 0);
-  assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].iPhi == 0);
-  assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].pt == 100);
-  assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].iEta == 9);
-  assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].iPhi == 0);
+  std::raise(SIGINT);
+
+  // assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].pt == 100);
+  // assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].iEta == 0);
+  // assert(jets[11+RESET_PERIOD][0 / 2][0 % 2].iPhi == 0);
+  // assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].pt == 100);
+  // assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].iEta == 9);
+  // assert(jets[11+RESET_PERIOD][9 / 2][9 % 2].iPhi == 0);
 
   return 0;
 }

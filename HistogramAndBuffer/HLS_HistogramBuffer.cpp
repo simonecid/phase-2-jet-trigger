@@ -94,9 +94,9 @@ void hls_histogram_buffer(
   // id of incoming region
     sRegister = (sRegister == (RESET_PERIOD - 1)) ? 0 : sRegister + 1;
     lRegionID = sRegister;
-    #ifndef __SYNTHESIS__
-    std::cout << "sRegister: " << +sRegister << std::endl;
-    #endif
+    // #ifndef __SYNTHESIS__
+    // std::cout << "sRegister: " << +sRegister << std::endl;
+    // #endif
   }
 
   hls::Barrel_PfInputHistogram::TBins lBarrelBins;
