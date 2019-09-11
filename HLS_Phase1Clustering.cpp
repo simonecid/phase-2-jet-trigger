@@ -145,9 +145,9 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, Links outJets
     TPhi lNextRegisterValue = sRegister + 1;
     sRegister = (sRegister == (RESET_PERIOD - 1)) ? kNullPhi : lNextRegisterValue;
     lPhiIndex = sRegister;
-    #ifndef __SYNTHESIS__
-    std::cout << "sRegister: " << +sRegister << std::endl;
-    #endif
+    // #ifndef __SYNTHESIS__
+    // std::cout << "sRegister: " << +sRegister << std::endl;
+    // #endif
   }
 
   CaloGridBuffer lCaloGridTmp;
