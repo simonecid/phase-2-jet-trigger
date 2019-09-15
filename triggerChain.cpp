@@ -36,24 +36,16 @@ int main(int argc, char const *argv[])
     }
   }
 
-  inputs[RESET_PERIOD][0].pt = 5.5 / 0.25;
-  inputs[RESET_PERIOD][0].iEta = 113;
-  inputs[RESET_PERIOD][0].iPhi = 127;
-  inputs[RESET_PERIOD][1].pt = 4.75 / 0.25;
-  inputs[RESET_PERIOD][1].iEta = 147;
-  inputs[RESET_PERIOD][1].iPhi = 149;
-  inputs[RESET_PERIOD][2].pt = 3.25 / 0.25;
-  inputs[RESET_PERIOD][2].iEta = 143;
-  inputs[RESET_PERIOD][2].iPhi = 137;
-  inputs[RESET_PERIOD][3].pt = 30.5 / 0.25;
-  inputs[RESET_PERIOD][3].iEta = 117;
-  inputs[RESET_PERIOD][3].iPhi = 139;
-  inputs[RESET_PERIOD][4].pt = 15.0 / 0.25;
-  inputs[RESET_PERIOD][4].iEta = 120;
-  inputs[RESET_PERIOD][4].iPhi = 134;
-  inputs[RESET_PERIOD][5].pt = 9.75 / 0.25;
-  inputs[RESET_PERIOD][5].iEta = 112;
-  inputs[RESET_PERIOD][5].iPhi = 153;
+  std::vector<float> ptVector = {65.0, 12.0, 34.25, 3.75, 8.5, 5.25, 4.5, 15.25, 9.5, 7.5, 5.75, 4.25, 3.25, 2.0};
+  std::vector<int> etaVector = {14, 15, 30, 18, 63, 26, 26, 46, 23, 32, 46, 46, 1, 63};
+  std::vector<int> phiVector = {33, 30, 118, 113, 113, 111, 111, 123, 12, 126, 99, 118, 110, 28};
+
+  for (int x = 0; x < ptVector.size(); x++)
+  {
+    inputs[RESET_PERIOD][x].pt = ptVector[x] / 0.25;
+    inputs[RESET_PERIOD][x].iEta = etaVector[x];
+    inputs[RESET_PERIOD][x].iPhi = phiVector[x];
+  } 
 
   bool inReset = true;
   bool outReset1, outReset2;
