@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
-import os
-import sys
 import math
 import numpy
 
@@ -14,7 +9,7 @@ zeros = '0000000000000000'
 frameIt = -1
 wCount = -1
 
-with open("ttBarPacked_2.dat", "r") as inFile:
+with open("ttBarPacked.dat", "r") as inFile:
   for line in inFile:
     if('1v' in line):
       frameIt += 1
@@ -24,21 +19,16 @@ with open("ttBarPacked_2.dat", "r") as inFile:
         wCount +=1 
       else: 
         wCount = 0
-      for wordIt in range(1,25):
+      for wordIt in xrange(1,25):
         word = linkData[wordIt].replace(' ','')
         frameData.append(word) if int(word, 16) & 0xffff else 0
         #frameData.append(word) if word not in zeros else 0
       data.append(frameData) if frameData else 0
     data.append('\n') if (not (frameIt-1)%13 and frameIt > 1) else 0
 
-newEvent = False
 for region in data:
   if '\n' in region:
-    if newEvent:
-      print('NEW EVENT')
-    else: 
-      print(' ')
-    newEvent = not newEvent
+    print(' ')
     continue
   for pfCand in region:
     print(str((int(pfCand, 16) & 0xffff) * ptLSB)[:6] +
