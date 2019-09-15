@@ -4,6 +4,7 @@
 #include "HistogramAndBuffer/HLS/Types.h"
 
 #include <assert.h>
+#include <vector>
 
 #define ITERATIONS RESET_PERIOD*3
 
@@ -36,16 +37,26 @@ int main(int argc, char const *argv[])
     }
   }
 
-  std::vector<float> ptVector = {65.0, 12.0, 34.25, 3.75, 8.5, 5.25, 4.5, 15.25, 9.5, 7.5, 5.75, 4.25, 3.25, 2.0};
-  std::vector<int> etaVector = {14, 15, 30, 18, 63, 26, 26, 46, 23, 32, 46, 46, 1, 63};
-  std::vector<int> phiVector = {33, 30, 118, 113, 113, 111, 111, 123, 12, 126, 99, 118, 110, 28};
+  std::vector<TPt> ptVector_0 = {4.25, 5.75, 9.75, 3.25, 4.5, 8.25, 12, 1.25, 2, 2.5, 6.75, 15.25, 6.25, 2.75};
+  std::vector<TEta> etaVector_0 = {87, 107, 108, 113, 114, 120, 125, 126, 126, 128, 133, 139, 139, 160};
+  std::vector<TPhi> phiVector_0 = {126, 142, 156, 129, 9, 156, 155, 154, 111, 153, 149, 12, 4, 52};
 
-  for (int x = 0; x < ptVector.size(); x++)
+  std::vector<TPt> ptVector_1 = {8.25, 1.25, 1.75, 1.75, 3.5, 4, 4.75, 27, 2.5, 12.5, 6.25, 10.5, 3};
+  std::vector<TEta> etaVector_1 = {13, 14, 17, 22, 33, 40, 52, 57, 58, 59, 68, 70, 78};
+  std::vector<TPhi> phiVector_1 = {28, 34, 12, 13, 10, 57, 13, 25, 32, 20, 17, 21, 25};
+
+  for (int x = 0; x < ptVector_0.size(); x++)
   {
-    inputs[RESET_PERIOD][x].pt = ptVector[x] / 0.25;
-    inputs[RESET_PERIOD][x].iEta = etaVector[x];
-    inputs[RESET_PERIOD][x].iPhi = phiVector[x];
-  } 
+    inputs[RESET_PERIOD][x].pt = ptVector_0[x];
+    inputs[RESET_PERIOD][x].iEta = etaVector_0[x];
+    inputs[RESET_PERIOD][x].iPhi = phiVector_0[x];
+  }
+  for (int x = 0; x < ptVector_1.size(); x++)
+  {
+    inputs[RESET_PERIOD + 1][x].pt = ptVector_1[x];
+    inputs[RESET_PERIOD + 1][x].iEta = etaVector_1[x];
+    inputs[RESET_PERIOD + 1][x].iPhi = phiVector_1[x];
+  }
 
   bool inReset = true;
   bool outReset1, outReset2;
