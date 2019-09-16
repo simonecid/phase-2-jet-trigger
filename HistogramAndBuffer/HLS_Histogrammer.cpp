@@ -78,7 +78,7 @@ void hls_histogrammer(
 
   histogramInputs<hls::Barrel_PfInputHistogram, hls::Barrel_PfInputHistogram::TBins, const hls::Barrel_Inputs, hls::Barrel_Inputs>
     (barrel_inputs, barrel_bins, lEtaOffset, lPhiOffset);
-  outValid = d0Valid; //alignment`
+  outValid = d0Valid; //alignment
 
   return;
 }

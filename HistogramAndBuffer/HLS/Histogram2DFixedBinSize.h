@@ -217,6 +217,9 @@ namespace hls
     // #if DSP_FILL == true
     TXAxis xDiff = xPosition - this -> _xLowEdge;
     TXAxis xIdx = xDiff / xStep;
+    const TXAxis lastBin = nBinsX - 1;
+    // anything in the overflow goes in the last bin
+    xIdx = (xIdx >= nBinsX) ? lastBin : xIdx;
     // #endif
     
     // #if LUT_FILL == true    
@@ -259,6 +262,9 @@ namespace hls
     // #if DSP_FILL == true
     TYAxis yDiff = yPosition - this -> _yLowEdge;
     TYAxis yIdx = yDiff / yStep;
+    const TYAxis lastBin = nBinsY - 1;
+    // anything in the overflow goes in the last bin
+    yIdx = (yIdx >= nBinsY) ? lastBin : yIdx;
     // #endif
     
     // #if LUT_FILL == true    
