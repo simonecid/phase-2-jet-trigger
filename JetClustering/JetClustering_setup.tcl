@@ -1,10 +1,10 @@
 # creating project and solution
-open_project -reset JetClustering
-open_solution -reset KU115
+open_project JetClusteringMHT
+open_solution VU9P
 
 #setting target device
-set_part xcku115-flvd1517-2-i
-create_clock -period 300MHz
+set_part xcvu9p-flga2104-1-i
+create_clock -period 240MHz
 
 #adding hls files
 add_files -cflags "-std=c++11" "HLS_Phase1Clustering.cpp"

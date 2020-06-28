@@ -1,7 +1,7 @@
 #ifndef __HISTOGRAM_SETTINGS_H__
 #define __HISTOGRAM_SETTINGS_H__
 
-#define RESET_PERIOD 13
+#define RESET_PERIOD 15
 
 // #define N_PHI_SEGMENTS 9
 #define N_PHI_SEGMENTS 1

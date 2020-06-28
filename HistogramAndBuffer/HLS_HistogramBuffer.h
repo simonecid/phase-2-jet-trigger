@@ -7,8 +7,10 @@
 #include <hls_video.h>
 
 // typedef hls::TPt TBuffer[PHI_N_BINS][N_ETA_BINS_BARREL_REGION];
-typedef hls::Window<N_BINS_PHI, N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL, hls::TPt> TBarrelBuffer;
-typedef hls::Window<N_BINS_PHI, N_BINS_ETA, hls::TPt> TBuffer;
+namespace hls{
+  typedef hls::Window<N_BINS_PHI, N_ETA_BINS_BARREL_REGION * N_ETA_SEGMENTS_BARREL, hls::TPt> TBarrelBuffer;
+  typedef hls::Window<N_BINS_PHI, N_BINS_ETA, hls::TPt> TBuffer;
+}
 
 
 void hls_histogram_buffer(

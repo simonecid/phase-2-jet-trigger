@@ -6,7 +6,7 @@ import sys
 import math
 import numpy
 
-ptLSB = 0.25
+ptLSB = 1#0.25
 etaLSB = 1#0.0043633231
 phiLSB = 1#0.0043633231
 data = []
@@ -14,7 +14,7 @@ zeros = '0000000000000000'
 frameIt = -1
 wCount = -1
 
-with open("ttBarPacked_2.dat", "r") as inFile:
+with open("patterns/pattern.txt_0.txt", "r") as inFile:
   for line in inFile:
     if('1v' in line):
       frameIt += 1

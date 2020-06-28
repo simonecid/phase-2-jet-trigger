@@ -1,0 +1,1 @@
+g++ -g `root-config --libs  --ldflags --cflags` -std=c++11 -DENABLE_ROOT -I/software/CAD/Xilinx/2019.2/Vivado/2019.2/include/ -o triggerChain.exe JetClustering/HLS_Phase1Clustering.cpp HistogramAndBuffer/HLS_Histogrammer.cpp HistogramAndBuffer/HLS_HistogramBuffer.cpp HistogramAndBuffer/RegionOffsets.cpp triggerChain.cpp

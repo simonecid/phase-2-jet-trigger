@@ -104,7 +104,7 @@ void hls_histogram_buffer(
   copy2D<decltype(inBarrelBins), N_ETA_BINS_BARREL_REGION, N_BINS_PHI_REGION, decltype(lBarrelBins)>
     (inBarrelBins, lBarrelBins); 
   
-  static TBuffer sBuffer;
+  static hls::TBuffer sBuffer;
 
   // checking if all the regions have been received
   if (lRegionID < N_ETA_SEGMENTS_BARREL * N_PHI_SEGMENTS)

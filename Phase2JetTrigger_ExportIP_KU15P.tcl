@@ -1,5 +1,5 @@
-set part xcku115-flvd1517-2-i
-set clock 300MHz
+set part xcku15p-ffva1760-2-e
+set clock 360MHz
 
 ## STEP 1: Building and exporting to IP format the jet clustering
 
@@ -9,6 +9,7 @@ open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock
+set_clock_uncertainty 1.5
 #adding hls files
 add_files -cflags "-std=c++11" "JetClustering/HLS_Phase1Clustering.cpp"
 # adding testbench files
@@ -30,6 +31,7 @@ open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock
+set_clock_uncertainty 1.5
 #adding hls files
 add_files -cflags "-std=c++11" "HistogramAndBuffer/HLS_Histogrammer.cpp"
 add_files -cflags "-std=c++11" "HistogramAndBuffer/RegionOffsets.cpp"
@@ -52,6 +54,7 @@ open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock
+set_clock_uncertainty 1.5
 #adding hls files
 add_files -cflags "-std=c++11" "HistogramAndBuffer/HLS_HistogramBuffer.cpp"
 # adding testbench files

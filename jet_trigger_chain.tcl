@@ -18,19 +18,6 @@ variable script_folder
 set script_folder [_tcl::get_script_folder]
 
 ################################################################
-# Check if script is running in correct Vivado version.
-################################################################
-set scripts_vivado_version 2018.2
-set current_vivado_version [version -short]
-
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   catch {common::send_msg_id "BD_TCL-109" "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
-
-   return 1
-}
-
-################################################################
 # START
 ################################################################
 
@@ -41,10 +28,20 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # project, but make sure you do not have an existing project
 # <./jet_trigger_chain/jet_trigger_chain.xpr> in the current working folder.
 
+#######################################
+############## EDIT ME ################
+#######################################
+
+# Make sure the -part argument is correct and is the target device you want to run on
+
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project -force jet_trigger_chain jet_trigger_chain -part xcku115-flvd1517-2-i
+   create_project -force jet_trigger_chain jet_trigger_chain -part xcku15p-ffva1760-2-e
 }
+
+#######################################
+############## END EDIT ME ############
+#######################################
 
 set_property target_language VHDL [current_project]
 
@@ -130,7 +127,7 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 cern-cms:hls:hls_histogram_buffer:0.1\
 cern-cms:hls:hls_histogrammer:0.2\
-cern-cms:hls:hls_jet_clustering:0.2\
+cern-cms:hls:hls_jet_clustering:0.3\
 "
 
    set list_ips_missing ""
@@ -296,10 +293,22 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.LAYERED_METADATA {xilinx.com:interface:datatypes:1.0 {DATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 1} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0}}}}} \
  ] $d0Valid_0
-  set in_clock_240MHz [ create_bd_port -dir I -type clk in_clock_240MHz ]
+
+#######################################
+############## EDIT ME ################
+#######################################
+
+# Set CONFIG.FREQ_HZ to the correct value
+
+  set in_clock [ create_bd_port -dir I -type clk in_clock ]
   set_property -dict [ list \
    CONFIG.FREQ_HZ {240000000} \
- ] $in_clock_240MHz
+ ] $in_clock
+
+#######################################
+############## END EDIT ME ############
+#######################################
+
   set outJets_0_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_0_0 ]
   set outJets_10_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_10_0 ]
   set outJets_11_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_11_0 ]
@@ -318,6 +327,7 @@ proc create_root_design { parentCell } {
   set outJets_7_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_7_0 ]
   set outJets_8_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_8_0 ]
   set outJets_9_0 [ create_bd_port -dir O -from 63 -to 0 -type data outJets_9_0 ]
+  set outSums_0_0 [ create_bd_port -dir O -from 63 -to 0 -type data outSums_0_0 ]
 
   # Create instance: hls_histogram_buffer_0, and set properties
   set hls_histogram_buffer_0 [ create_bd_cell -type ip -vlnv cern-cms:hls:hls_histogram_buffer:0.1 hls_histogram_buffer_0 ]
@@ -326,7 +336,7 @@ proc create_root_design { parentCell } {
   set hls_histogrammer_0 [ create_bd_cell -type ip -vlnv cern-cms:hls:hls_histogrammer:0.2 hls_histogrammer_0 ]
 
   # Create instance: hls_jet_clustering_0, and set properties
-  set hls_jet_clustering_0 [ create_bd_cell -type ip -vlnv cern-cms:hls:hls_jet_clustering:0.2 hls_jet_clustering_0 ]
+  set hls_jet_clustering_0 [ create_bd_cell -type ip -vlnv cern-cms:hls:hls_jet_clustering:0.3 hls_jet_clustering_0 ]
 
   # Create port connections
   connect_bd_net -net barrel_inputs_0_0_1 [get_bd_ports barrel_inputs_0_0] [get_bd_pins hls_histogrammer_0/barrel_inputs_0]
@@ -463,8 +473,9 @@ proc create_root_design { parentCell } {
   connect_bd_net -net hls_jet_clustering_0_outJets_15 [get_bd_ports outJets_15_0] [get_bd_pins hls_jet_clustering_0/outJets_15]
   connect_bd_net -net hls_jet_clustering_0_outJets_16 [get_bd_ports outJets_16_0] [get_bd_pins hls_jet_clustering_0/outJets_16]
   connect_bd_net -net hls_jet_clustering_0_outJets_17 [get_bd_ports outJets_17_0] [get_bd_pins hls_jet_clustering_0/outJets_17]
+  connect_bd_net -net hls_jet_clustering_0_outSums_0 [get_bd_ports outSums_0_0] [get_bd_pins hls_jet_clustering_0/outSums]
   connect_bd_net -net d0Valid_0_1 [get_bd_ports d0Valid_0] [get_bd_pins hls_histogrammer_0/d0Valid]
-  connect_bd_net -net in_clock_240MHz_1 [get_bd_ports in_clock_240MHz] [get_bd_pins hls_histogram_buffer_0/ap_clk] [get_bd_pins hls_histogrammer_0/ap_clk] [get_bd_pins hls_jet_clustering_0/ap_clk]
+  connect_bd_net -net in_clock_1 [get_bd_ports in_clock] [get_bd_pins hls_histogram_buffer_0/ap_clk] [get_bd_pins hls_histogrammer_0/ap_clk] [get_bd_pins hls_jet_clustering_0/ap_clk]
 
   # Create address segments
 

@@ -5,7 +5,7 @@ set clock 300MHz
 
 # creating project and solution
 open_project -reset HLS_JetClustering
-open_solution -reset KU115
+open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock
@@ -20,13 +20,13 @@ config_rtl -reset none
 #synthetising
 csynth_design
 #exporting IP
-export_design -format ip_catalog -vendor "cern-cms" -version 0.2 -description jet_clustering
+export_design -format ip_catalog -vendor "cern-cms" -version 0.3 -description jet_clustering
 
 ## STEP 2: Building and exporting to IP format the histogrammer
 
 # creating project and solution
 open_project -reset HLS_Histogrammer
-open_solution -reset KU115
+open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock
@@ -48,7 +48,7 @@ export_design -format ip_catalog -vendor "cern-cms" -version 0.2 -description hi
 
 # creating project and solution
 open_project -reset HLS_HistogramBuffer
-open_solution -reset KU115
+open_solution -reset IP_Export
 #setting target device
 set_part $part
 create_clock -period $clock

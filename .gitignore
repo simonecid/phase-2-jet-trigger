@@ -21,6 +21,8 @@ reports/
 *.d
 *.o
 **/KU115
+**/KU15P
+**/VU9P
 **/syn
 **/impl
 **/.autopilot
@@ -31,3 +33,9 @@ IPs/
 jet_trigger_chain/
 *.jou
 *.dat
+*.md
+*.txt
+*.directive
+*.funcunit
+*.json
+*.root

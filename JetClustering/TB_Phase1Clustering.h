@@ -3,11 +3,14 @@
 
 #include "HLS_Phase1Clustering.h"
 
+// collection of time-multiplexed jets, used in the test-bench
+typedef Jets TMJets[ETA_GRID_SIZE];
+
 void clearGrid(CaloGrid grid, TPt value=0);
 void clearJets(TMJets jets);
-void test9x9();
+void clearSums(SumLink & sums);
 void test5x5();
 bool readCaloGridFromFile(const std::string &filepath, CaloGridBuffer caloGridBuffer);
-void runJetFinder(const CaloGridBuffer caloGridBuffer, TMJets tmJets, bool reset);
+void runJetFinder(const CaloGrid caloGrid, TMJets tmJets, SumLink sumLink, bool reset);
 void printCaloGrid(const CaloGrid caloGrid);
 #endif //__TB_PHASE1CLUSTERING_H__
