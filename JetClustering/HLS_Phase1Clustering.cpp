@@ -217,8 +217,6 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, JetLinks outJ
     sHT = 0;
     sTotalPx = 0;
     sTotalPy = 0;
-    sJetPx = 0;
-    sJetPy = 0;
   }
 
   // local version of the calorimeter buffer. I am not sure it is required
@@ -300,8 +298,6 @@ void hls_jet_clustering(const CaloGridPhiSlice inCaloGridPhiSlice, JetLinks outJ
     lJetPx = lJetTotalPt * cos_iPhi[lOutJetsPhiToOutput]; // all jets have same iPhi in the same clock cycle
     lJetPy = lJetTotalPt * sin_iPhi[lOutJetsPhiToOutput];
     
-    sJetPx += lJetPx;
-    sJetPy += lJetPy;
   }
 
   // old cordic, running on 16 bit pt squared, which is not big enough
